@@ -1,9 +1,14 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.Product;
+import com.example.backend.model.ProductDetail;
+import com.example.backend.model.ProductTranslation;
+import com.example.backend.repository.ProductRepository;
 import com.example.backend.repository.ProductTranslationRepository;
 import com.example.backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,10 +24,13 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductRepository productRepository;
+
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductRepository productRepository) {
         this.productService = productService;
+        this.productRepository = productRepository;
     }
     @Autowired
     private ProductTranslationRepository productTranslationRepository;
@@ -43,12 +50,10 @@ public class ProductController {
 
     // Lọc lấy sản phẩm ngẫu nhiên
     @GetMapping("/random")
-    public ResponseEntity<List<Product>> getRandomProducts(@RequestParam(defaultValue = "4") int limit) {
-        List<Product> products = productService.getRandomProducts(limit);
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(products);
+    public List<Product> getRandomProducts(@RequestParam int limit, @RequestParam String lang) {
+        return productService.getRandomProducts(limit, lang);
     }
+
     // Tạo API lấy danh sách name theo masp[] và lang
     @GetMapping("/product-names")
     public List<Map<String, String>> getProductNames(
@@ -91,10 +96,11 @@ public class ProductController {
 
     // Sắp xếp sản phẩm theo tên
     @GetMapping("/sort/name")
-    public List<Product> sortProductsByName(@RequestParam boolean ascending) {
-        return productService.sortProductsByName(ascending);
+    public List<Product> sortProductsByName(
+            @RequestParam boolean ascending,
+            @RequestParam(defaultValue = "vi") String lang) {
+        return productService.sortProductsByName(ascending, lang);
     }
-
     // Sắp xếp sản phẩm theo giá
     @GetMapping("/sort/price")
     public List<Product> sortProductsByPrice(@RequestParam boolean ascending) {

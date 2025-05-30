@@ -21,12 +21,21 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF để frontend React gọi API dễ hơn
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/product/**").permitAll() // Cho phép không đăng nhập với API
-                        .requestMatchers("/auth/**").permitAll() // Cho phép không đăng nhập với Auth API
-                        .requestMatchers("/test/**").permitAll() // Cho phép không đăng nhập với Test API
-                        .anyRequest().authenticated() // Các URL khác vẫn cần login
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/configuration/ui",
+                                "/configuration/security"
+                        ).permitAll()
+                        .requestMatchers("/api/product/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/test/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
