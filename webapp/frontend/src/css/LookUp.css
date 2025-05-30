@@ -1,0 +1,47 @@
+/* LookUp.css */
+
+/* Điều hướng */
+.navi {
+    color: black;
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.navi a {
+    text-decoration: none;
+    color: white;
+}
+
+.navi p {
+    margin: 0;
+}
+
+/* Container */
+.container {
+    background-color: white;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* Cột sản phẩm */
+.product-card {
+    display: block;
+    padding: 10px;
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: scale(1.03);
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* Responsive cho ảnh */
+.product-card img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}

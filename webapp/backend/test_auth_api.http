@@ -1,0 +1,46 @@
+### Test API đăng ký
+POST http://localhost:8888/auth/register
+Content-Type: application/json
+
+{
+  "userName": "test1",
+  "password": "123456",
+  "email": "test1@example.com",
+  "phone": "0123456781",
+  "surName": "Nguyen",
+  "lastName": "Van A",
+  "address": "123 Test Street",
+  "dateOfBirth": "1990-01-01",
+  "gender": "Male"
+}
+
+### Test API đăng nhập
+POST http://localhost:8888/auth/login
+Content-Type: application/json
+
+{
+  "userName": "test1",
+  "password": "123456"
+}
+
+### Test API đăng nhập với thông tin sai
+POST http://localhost:8888/auth/login
+Content-Type: application/json
+
+{
+  "userName": "testuser",
+  "password": "wrongpassword"
+}
+
+### Test API đăng ký với username đã tồn tại
+POST http://localhost:8888/auth/register
+Content-Type: application/json
+
+{
+  "userName": "testuser",
+  "password": "123456",
+  "email": "test2@example.com",
+  "phone": "0987654321",
+  "surName": "Tran",
+  "lastName": "Van B"
+}

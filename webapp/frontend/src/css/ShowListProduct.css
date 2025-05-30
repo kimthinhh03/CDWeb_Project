@@ -1,0 +1,57 @@
+.show-list h4 {
+    font-weight: 600;
+    color: #ff7b00;
+    margin-bottom: 20px;
+}
+
+.filter-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filter-section h6 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.filter-section .form-check-label {
+    font-size: 0.95rem;
+}
+
+.card.product-card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.card.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card.product-card img {
+    padding: 10px;
+    height: 180px;
+    object-fit: contain;
+    background-color: #fff;
+    margin: 0 auto;
+}
+
+.card.product-card .card-body h6 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    color: #333;
+}
+
+.card.product-card .card-body h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #28a745;
+}
