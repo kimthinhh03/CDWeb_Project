@@ -1,33 +1,59 @@
-HELP.md
+# ================================
+# Maven build
+# ================================
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
 
-### STS ###
-.apt_generated
+# ================================
+# IDE configurations
+# ================================
+
+# STS / Eclipse
+.apt_generated/
 .classpath
 .factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
+.settings/
+.springBeans/
+.sts4-cache/
 
-### IntelliJ IDEA ###
-/.idea
+# IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-/node_modules
-### VS Code ###
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code
 .vscode/
+
+# ================================
+# Node / React frontend
+# ================================
+node_modules/
+build/
+dist/
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# ================================
+# OS / General
+# ================================
+.DS_Store
+Thumbs.db
+*.log
+
+# ================================
+# Ignore specific file (optional)
+# ================================
+# HELP.md  # <-- Xoá dấu # nếu bạn thật sự muốn bỏ qua file này
+
