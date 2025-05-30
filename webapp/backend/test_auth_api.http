@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ### Test API đăng nhập
-POST http://localhost:8888/auth/login
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 
 ### Test API đăng nhập với thông tin sai
-POST http://localhost:8888/auth/login
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {

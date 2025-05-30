@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +33,7 @@ public class Product implements Serializable {
     @Column(name = "nhacungcap", table = "sanpham")
     private String nhacungcap;
 
-    @Column(name = "mota", table = "sanpham")
+    @Column(name = "mota", table = "sanpham", length = 2000)
     private String mota;
 
     // Các thuộc tính từ primary table (chitietsanpham)
@@ -49,11 +50,17 @@ public class Product implements Serializable {
     private Integer stockQuantity;
 
 
-    // Liên kết với bảng sanpham
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "masp", referencedColumnName = "masp", insertable = false, updatable = false)
-    private ProductDetail productDetail;
+//    // Liên kết với bảng sanpham
+//    @OneToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "masp", referencedColumnName = "masp", insertable = false, updatable = false)
+//    private ProductDetail productDetail;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private java.util.List<ProductTranslation> translations;
+
+    public Product() {
+
+    }
 }
 

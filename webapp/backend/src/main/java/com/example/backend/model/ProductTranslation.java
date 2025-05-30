@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +27,7 @@ public class ProductTranslation {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "masp", referencedColumnName = "masp", insertable = false, updatable = false)
+    @JsonBackReference
     private Product product;
 
 
