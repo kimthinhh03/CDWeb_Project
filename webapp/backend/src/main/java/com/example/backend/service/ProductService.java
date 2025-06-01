@@ -1,10 +1,12 @@
 package com.example.backend.service;
 
 import com.example.backend.model.Product;
+import com.example.backend.model.ProductDetail;
 import com.example.backend.repository.ProductRepository;
 import com.example.backend.repository.ProductTranslationRepository;
 import com.example.backend.utils.VietnameseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,10 +29,22 @@ public class ProductService {
     }
 
     // Lấy tất cả sản phẩm
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
+    public List<Product> getAllProducts(String lang) {
+        List<Product> products = productRepository.findAll();
 
+        for (Product product : products) {
+            ProductDetail detail = product.getProductDetail();
+
+            translationRepo.findByMaspAndLang(product.getMasp(), lang)
+                    .ifPresent(tr -> {
+                        if (detail != null) {
+                            detail.setTensp(tr.getName());
+                        }
+                    });
+        }
+
+        return products;
+    }
     // Lấy sản phẩm theo ID
     public Optional<Product> getProductById(String id) {
          return productRepository.findById(id);
