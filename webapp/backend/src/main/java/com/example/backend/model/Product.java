@@ -62,5 +62,10 @@ public class Product implements Serializable {
     public Product() {
 
     }
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "masp", referencedColumnName = "masp", insertable = false, updatable = false)
+    private ProductDetail productDetail;
+
 }
 

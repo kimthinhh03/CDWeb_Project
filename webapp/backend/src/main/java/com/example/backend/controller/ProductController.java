@@ -7,6 +7,7 @@ import com.example.backend.repository.ProductRepository;
 import com.example.backend.repository.ProductTranslationRepository;
 import com.example.backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -36,8 +37,8 @@ public class ProductController {
     private ProductTranslationRepository productTranslationRepository;
     // Lấy tất cả sản phẩm
     @GetMapping("/all")
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public List<Product> getAllProducts(@RequestParam(defaultValue = "vi") String lang) {
+        return productService.getAllProducts(lang);
     }
 
     // Lấy sản phẩm theo ID

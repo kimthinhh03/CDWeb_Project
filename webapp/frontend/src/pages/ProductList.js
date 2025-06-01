@@ -22,7 +22,7 @@ const ProductList = () => {
     useEffect(() => {
         const fetchAllProducts = async () => {
             try {
-                const res = await axios.get(`/api/product/alls?lang=${lang}`);
+                const res = await axios.get(`/api/product/all?lang=${lang}`);
                 if (Array.isArray(res.data)) {
                     setAllProducts(res.data);
                 } else {
@@ -66,7 +66,7 @@ const ProductList = () => {
                                 <Link to={`/product/${product.masp}`} className="product-link">
                                     <div className="card product-card">
                                         <img
-                                            src={`/img/${product.productDetail?.hinhanh}`}
+                                            src={`/img/${product.hinhanh}`}
                                             alt={product.productDetail?.tensp}
                                             className="card-img-top"
                                             height="200"
