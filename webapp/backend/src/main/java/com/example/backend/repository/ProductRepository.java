@@ -23,11 +23,26 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     List<Product> findByTenspContainingIgnoreCase(String name);
 
     // Lọc sản phẩm theo danh mục
-    List<Product> findByCategory(String category);
+    @Query("SELECT p FROM Product p WHERE p.category = :category")
+    List<Product> findByCategory(@Param("category") String category);
 
-    // Lọc sản phẩm theo khoảng giá
-    List<Product> findByPriceBetween(Double price, Double price2);
+    // Lọc theo khoảng giá và category
+    List<Product> findByPriceBetween(Double minPrice, Double maxPrice);
 
+    @Query("SELECT p FROM Product p WHERE p.price BETWEEN :min AND :max AND LOWER(p.category) = LOWER(:category)")
+    List<Product> findByPriceBetweenAndCategory(@Param("min") Double min, @Param("max") Double max, @Param("category") String category);
+
+    @Query(value = """
+    SELECT   p.masp, p.category, p.price, p.unit, p.stock_quantity,
+             s.tensp, s.hinhanh, s.nhacungcap, s.mota
+    FROM chitietsanpham p
+    JOIN sanpham s ON p.masp = s.masp
+    WHERE p.price BETWEEN :min AND :max
+      AND unaccent(p.category) ILIKE unaccent('%' || :category || '%')
+""", nativeQuery = true)
+    List<Product> filterCategoryIgnoreAccent(@Param("min") double min,
+                                             @Param("max") double max,
+                                             @Param("category") String category);
     // Lọc sản phẩm ngẫu nhiên
     @Query("SELECT p FROM Product p ORDER BY function('RANDOM')")
     List<Product> findRandomProducts(Pageable pageable);

@@ -73,15 +73,38 @@ public class ProductService {
         return products;
     }
     // Lọc sản phẩm theo danh mục
-    public List<Product> getProductsByCategory(String category) {
+//    public List<Product> getProductsByCategory(String category) {
+//        String normalized = VietnameseUtils.toUpperNoAccent(category);
+//        System.out.println(">>> Lọc sản phẩm theo category: " + normalized);
+//        return productRepository.findByCategory(normalized);
+//    }
+    public List<Product> getProductsByCategory(String category, String lang) {
         String normalized = VietnameseUtils.toUpperNoAccent(category);
         System.out.println(">>> Lọc sản phẩm theo category: " + normalized);
-        return productRepository.findByCategory(normalized);
+
+        List<Product> products = productRepository.findByCategory(normalized);
+
+        for (Product product : products) {
+            if (product.getTranslations() != null) {
+                product.setTranslations(
+                        product.getTranslations().stream()
+                                .filter(t -> t.getLang().equalsIgnoreCase(lang))
+                                .toList()
+                );
+            }
+        }
+
+        return products;
     }
 
     // Lọc sản phẩm theo khoảng giá
     public List<Product> filterProductsByPriceRange(Double minPrice, Double maxPrice, String lang) {
         List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
+        applyTranslations(products, lang);
+        return products;
+    }
+    public List<Product> filterProductsByPriceAndCategory(double min, double max, String category, String lang) {
+        List<Product> products = productRepository.filterCategoryIgnoreAccent(min, max, category);
         applyTranslations(products, lang);
         return products;
     }

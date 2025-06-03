@@ -10,6 +10,8 @@ const ShowListProduct = () => {
     const [products, setProducts] = useState([]);
     const [selectedPrice, setSelectedPrice] = useState(null);
     const [sort, setSort] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [hasLoaded, setHasLoaded] = useState(false); // 👈 mới thêm
     const navigate = useNavigate();
 
     const priceRanges = [
@@ -22,11 +24,13 @@ const ShowListProduct = () => {
 
     const fetchProducts = async () => {
         try {
+            setLoading(true);
             const lang = i18n.language;
             let endpoint = "";
 
             if (selectedPrice) {
-                endpoint = `/api/product/filter?minPrice=${selectedPrice.min}&maxPrice=${selectedPrice.max}&lang=${lang}`;
+                const encodedCategory = category ? `&category=${encodeURIComponent(category)}` : "";
+                endpoint = `/api/product/filter?minPrice=${selectedPrice.min}&maxPrice=${selectedPrice.max}${encodedCategory}&lang=${lang}`;
             } else if (sort === "nameAZ") {
                 endpoint = `/api/product/sort/name?ascending=true&lang=${lang}`;
             } else if (sort === "nameZA") {
@@ -36,7 +40,7 @@ const ShowListProduct = () => {
             } else if (sort === "priceZA") {
                 endpoint = `/api/product/sort/price?ascending=false&lang=${lang}`;
             } else if (category) {
-                endpoint = `/api/product/category/${category}?lang=${lang}`;
+                endpoint = `/api/product/category/${encodeURIComponent(category)}?lang=${lang}`;
             } else {
                 endpoint = `/api/product/all?lang=${lang}`;
             }
@@ -45,12 +49,24 @@ const ShowListProduct = () => {
             setProducts(response.data);
         } catch (err) {
             console.error("Lỗi khi tải sản phẩm:", err);
+        } finally {
+            setLoading(false);
+            setHasLoaded(true);
         }
     };
 
     useEffect(() => {
         fetchProducts();
     }, [category, selectedPrice, sort]);
+
+    const handlePriceClick = (range) => {
+        // Nếu chọn lại mức giá cũ → vẫn gọi fetch
+        if (selectedPrice?.min === range.min && selectedPrice?.max === range.max) {
+            fetchProducts();
+        } else {
+            setSelectedPrice(range);
+        }
+    };
 
     return (
         <div className="container my-4 show-list">
@@ -68,7 +84,8 @@ const ShowListProduct = () => {
                                 type="radio"
                                 name="priceRange"
                                 id={`price-${index}`}
-                                onChange={() => setSelectedPrice(range)}
+                                checked={selectedPrice?.min === range.min && selectedPrice?.max === range.max}
+                                onChange={() => handlePriceClick(range)}
                             />
                             <label className="form-check-label" htmlFor={`price-${index}`}>
                                 {range.label}
@@ -101,29 +118,40 @@ const ShowListProduct = () => {
                     <h4 className="mb-4">
                         {category ? t("categoryTitle", { category }) : t("allProducts")}
                     </h4>
+
                     <div className="row">
-                        {products.map((product) => (
-                            <div className="col-lg-4 col-md-6 mb-4" key={product.masp}>
-                                <Link to={`/product/${product.masp}`} className="text-decoration-none">
-                                    <div className="card product-card">
-                                        <img
-                                            src={`/img/${product.productDetail?.hinhanh}`}
-                                            className="card-img-top"
-                                            alt={product.productDetail?.tensp}
-                                            onError={(e) => {
-                                                e.target.src = "/img/logo.png";
-                                            }}
-                                        />
-                                        <div className="card-body">
-                                            <h6>{product.productDetail?.tensp}</h6>
-                                            <h5>
-                                                {product.price?.toLocaleString("vi-VN")} <u>đ</u>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                </Link>
+                        {loading ? (
+                            <div className="text-center w-100">
+                                <span>{t("loading")}</span>
                             </div>
-                        ))}
+                        ) : !loading && hasLoaded && products.length === 0 ? (
+                            <div className="text-center w-100">
+                                <span>{t("noProducts")}</span>
+                            </div>
+                        ) : (
+                            products.map((product) => (
+                                <div className="col-lg-4 col-md-6 mb-4" key={product.masp}>
+                                    <Link to={`/product/${product.masp}`} className="text-decoration-none">
+                                        <div className="card product-card">
+                                            <img
+                                                src={`/img/${product.productDetail?.hinhanh}`}
+                                                className="card-img-top"
+                                                alt={product.productDetail?.tensp}
+                                                onError={(e) => {
+                                                    e.target.src = "/img/logo.png";
+                                                }}
+                                            />
+                                            <div className="card-body">
+                                                <h6>{product.productDetail?.tensp}</h6>
+                                                <h5>
+                                                    {product.price?.toLocaleString("vi-VN")} <u>đ</u>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
             </div>

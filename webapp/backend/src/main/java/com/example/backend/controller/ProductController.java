@@ -80,8 +80,18 @@ public class ProductController {
 
     // Lọc sản phẩm theo danh mục
     @GetMapping("/category/{category}")
-    public List<Product> getProductsByCategory(@PathVariable String category) {
-        return productService.getProductsByCategory(category);
+    public List<Product> getProductsByCategory(@PathVariable String category, @RequestParam(defaultValue = "vi") String lang) {
+        return productService.getProductsByCategory(category, lang);
+    }
+    @GetMapping("/category-slide")
+    public ResponseEntity<List<Product>> getProductsByCategoryWithLimit(
+            @RequestParam String category,
+            @RequestParam(defaultValue = "vi") String lang,
+            @RequestParam(defaultValue = "16") int limit
+    ) {
+        List<Product> allProducts = productService.getProductsByCategory(category, lang);
+        List<Product> limited = allProducts.stream().limit(limit).toList();
+        return ResponseEntity.ok(limited);
     }
 
     // Lọc sản phẩm theo khoảng giá
@@ -89,10 +99,14 @@ public class ProductController {
     public List<Product> filterProductsByPrice(
             @RequestParam Double minPrice,
             @RequestParam Double maxPrice,
+            @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "vi") String lang
     ) {
-        return productService.filterProductsByPriceRange(minPrice, maxPrice, lang);
-
+        if (category != null && !category.isEmpty()) {
+            return productService.filterProductsByPriceAndCategory(minPrice, maxPrice, category, lang);
+        } else {
+            return productService.filterProductsByPriceRange(minPrice, maxPrice, lang);
+        }
     }
 
     // Sắp xếp sản phẩm theo tên

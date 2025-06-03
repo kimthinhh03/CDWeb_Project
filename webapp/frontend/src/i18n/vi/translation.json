@@ -19,7 +19,6 @@
   "payment": "Phương thức thanh toán",
   "refund": "Chính sách hoàn tiền",
   "followUs": "THEO DÕI SITL MARKET",
-  "home": "Trang Chủ",
   "searchPlaceholder": "Bạn tìm gì...",
   "search": "Tìm kiếm",
   "greeting": "Chào",
@@ -51,5 +50,6 @@
   "priceLabel5": "Trên 500.000đ",
   "loadingProduct": "Đang tải dữ liệu sản phẩm...",
   "productDetail": "Chi tiết sản phẩm",
-  "addToCart": "Thêm vào giỏ hàng"
+  "addToCart": "Thêm vào giỏ hàng",
+  "cosmeticProducts": "Mỹ phẩm"
 }
