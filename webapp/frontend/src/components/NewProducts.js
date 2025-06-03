@@ -48,7 +48,7 @@ const NewProducts = () => {
                 setLoading(false);
                 setProducts([]);
             });
-    }, [i18n.language]);
+    }, []);
 
     if (loading) {
         return <div className="text-center my-5">{t("loading")}</div>;
@@ -80,7 +80,7 @@ const NewProducts = () => {
                                         </h5>
                                         <p className="card-text text-dark">
                                             {product.productDetail?.tensp?.length > 45
-                                                ? product.productDetail.tensp.substring(0, 45) + '...'
+                                                ? product.productDetail?.tensp.substring(0, 45) + '...'
                                                 : product.productDetail?.tensp}
                                         </p>
                                     </div>

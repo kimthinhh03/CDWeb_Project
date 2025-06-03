@@ -10,6 +10,8 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import {Route, Routes, useLocation} from "react-router-dom";
+import Banner from "./components/Banner";
+import Cosmestic from "./components/Cosmestic";
 
 const App = () => {
     const location = useLocation();
@@ -19,7 +21,9 @@ const App = () => {
             <main className="container mt-4">
             {/*<main>*/}
                 {/* eslint-disable-next-line no-restricted-globals */}
+                {location.pathname === "/" && <Banner />}
                 {location.pathname === "/" && <NewProducts />}
+                {location.pathname === "/" && <Cosmestic />}
                 <Routes>
                     <Route path="/" element={<ProductList />} />
                     <Route path="/product/:productID" element={<ProductDescription />} />
