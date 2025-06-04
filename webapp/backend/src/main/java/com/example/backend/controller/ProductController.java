@@ -80,8 +80,14 @@ public class ProductController {
 
     // Lọc sản phẩm theo danh mục
     @GetMapping("/category/{category}")
-    public List<Product> getProductsByCategory(@PathVariable String category, @RequestParam(defaultValue = "vi") String lang) {
-        return productService.getProductsByCategory(category, lang);
+    public Page<Product> getProductsByCategory(
+            @PathVariable String category,
+            @RequestParam(defaultValue = "vi") String lang,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productService.getPageProductsByCategory(category, lang, pageable);
     }
     @GetMapping("/category-slide")
     public ResponseEntity<List<Product>> getProductsByCategoryWithLimit(
@@ -89,37 +95,49 @@ public class ProductController {
             @RequestParam(defaultValue = "vi") String lang,
             @RequestParam(defaultValue = "16") int limit
     ) {
-        List<Product> allProducts = productService.getProductsByCategory(category, lang);
+        List<Product> allProducts = productService.getListProductsByCategory(category, lang);
         List<Product> limited = allProducts.stream().limit(limit).toList();
         return ResponseEntity.ok(limited);
     }
 
     // Lọc sản phẩm theo khoảng giá
     @GetMapping("/filter")
-    public List<Product> filterProductsByPrice(
+    public Page<Product> filterProductsByPrice(
             @RequestParam Double minPrice,
             @RequestParam Double maxPrice,
             @RequestParam(required = false) String category,
-            @RequestParam(defaultValue = "vi") String lang
+            @RequestParam(defaultValue = "vi") String lang,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
     ) {
+        Pageable pageable = PageRequest.of(page, size);
         if (category != null && !category.isEmpty()) {
-            return productService.filterProductsByPriceAndCategory(minPrice, maxPrice, category, lang);
+            return productService.filterProductsByPriceAndCategory(minPrice, maxPrice, category, lang, pageable);
         } else {
-            return productService.filterProductsByPriceRange(minPrice, maxPrice, lang);
+            return productService.filterProductsByPriceRange(minPrice, maxPrice, lang, pageable);
         }
     }
 
     // Sắp xếp sản phẩm theo tên
     @GetMapping("/sort/name")
-    public List<Product> sortProductsByName(
+    public Page<Product> sortProductsByName(
             @RequestParam boolean ascending,
-            @RequestParam(defaultValue = "vi") String lang) {
-        return productService.sortProductsByName(ascending, lang);
+            @RequestParam(defaultValue = "vi") String lang,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productService.sortProductsByName(ascending, lang, pageable);
     }
     // Sắp xếp sản phẩm theo giá
     @GetMapping("/sort/price")
-    public List<Product> sortProductsByPrice(@RequestParam boolean ascending) {
-        return productService.sortProductsByPrice(ascending);
+    public Page<Product> sortProductsByPrice(
+            @RequestParam boolean ascending,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productService.sortProductsByPrice(ascending, pageable);
     }
 
     // Thêm sản phẩm mới
