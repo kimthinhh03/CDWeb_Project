@@ -1,40 +1,85 @@
-/* ProductDescription.css */
-
 .product-page {
-    background-color: #f0f0f0;
+    background-color: #f8f8f8;
     min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .product-container {
     background-color: white;
     border-radius: 10px;
     padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navi {
-    font-size: 15px;
-    color: #000;
-    margin-bottom: 20px;
+    font-size: 14px;
+    color: #333;
 }
 
 .navi a {
     text-decoration: none;
-    color: black;
+    color: #555;
     margin-right: 5px;
 }
 
 .product-image {
     max-width: 100%;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    padding: 5px;
+    background-color: #fff;
 }
 
 .product-title {
     font-weight: bold;
+    font-size: 28px;
+    margin-bottom: 10px;
 }
 
 .product-description {
-    margin-top: 20px;
+    margin-top: 15px;
+    font-size: 15px;
+    color: #444;
+    line-height: 1.6;
+}
+
+.quantity-box button {
+    width: 32px;
+    height: 32px;
+    line-height: 1;
+}
+
+.quantity-box input[type="text"] {
+    height: 32px;
     font-size: 16px;
-    color: #333;
+}
+
+.related-products img {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    max-height: 120px;
+    object-fit: cover;
+}
+
+.related-products .col-md-2 {
+    min-width: 120px;
+}
+
+.related-products .fw-semibold {
+    font-weight: 600;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745;
+    color: #fff;
 }

@@ -6,10 +6,7 @@ import com.example.backend.repository.ProductRepository;
 import com.example.backend.repository.ProductTranslationRepository;
 import com.example.backend.utils.VietnameseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,12 +70,17 @@ public class ProductService {
         return products;
     }
     // Lọc sản phẩm theo danh mục
+    public Page<Product> getPageProductsByCategory(String category, String lang, Pageable pageable) {
+        List<Product> products = productRepository.findByCategory(category);
+        applyTranslations(products, lang);
+        return new PageImpl<>(products, pageable, products.size());
+    }
 //    public List<Product> getProductsByCategory(String category) {
 //        String normalized = VietnameseUtils.toUpperNoAccent(category);
 //        System.out.println(">>> Lọc sản phẩm theo category: " + normalized);
 //        return productRepository.findByCategory(normalized);
 //    }
-    public List<Product> getProductsByCategory(String category, String lang) {
+    public List<Product> getListProductsByCategory(String category, String lang) {
         String normalized = VietnameseUtils.toUpperNoAccent(category);
         System.out.println(">>> Lọc sản phẩm theo category: " + normalized);
 
@@ -98,29 +100,28 @@ public class ProductService {
     }
 
     // Lọc sản phẩm theo khoảng giá
-    public List<Product> filterProductsByPriceRange(Double minPrice, Double maxPrice, String lang) {
-        List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
-        applyTranslations(products, lang);
-        return products;
+    public Page<Product> filterProductsByPriceAndCategory(double min, double max, String category, String lang, Pageable pageable) {
+        Page<Product> page = productRepository.filterCategoryIgnoreAccent(min, max, category, pageable);
+        applyTranslations(page.getContent(), lang);
+        return page;
     }
-    public List<Product> filterProductsByPriceAndCategory(double min, double max, String category, String lang) {
-        List<Product> products = productRepository.filterCategoryIgnoreAccent(min, max, category);
-        applyTranslations(products, lang);
-        return products;
+
+    public Page<Product> filterProductsByPriceRange(Double min, Double max, String lang, Pageable pageable) {
+        Page<Product> page = productRepository.findByPriceBetween(min, max, pageable);
+        applyTranslations(page.getContent(), lang);
+        return page;
     }
 
     // Sắp xếp sản phẩm theo tên
-    public List<Product> sortProductsByName(boolean ascending, String lang) {
-        if (ascending) {
-            return productRepository.findAllOrderByTranslatedNameAsc(lang);
-        } else {
-            return productRepository.findAllOrderByTranslatedNameDesc(lang);
-        }
+    public Page<Product> sortProductsByName(boolean ascending, String lang, Pageable pageable) {
+        return ascending
+                ? productRepository.findAllOrderByTranslatedNameAsc(lang, pageable)
+                : productRepository.findAllOrderByTranslatedNameDesc(lang, pageable);
     }
     // Sắp xếp sản phẩm theo giá
-    public List<Product> sortProductsByPrice(boolean ascending) {
+    public Page<Product> sortProductsByPrice(boolean ascending, Pageable pageable) {
         Sort sort = ascending ? Sort.by("price").ascending() : Sort.by("price").descending();
-        return productRepository.findAll(sort);
+        return productRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort));
     }
 
     // Thêm sản phẩm mới

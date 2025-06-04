@@ -27,10 +27,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     List<Product> findByCategory(@Param("category") String category);
 
     // Lọc theo khoảng giá và category
-    List<Product> findByPriceBetween(Double minPrice, Double maxPrice);
-
-    @Query("SELECT p FROM Product p WHERE p.price BETWEEN :min AND :max AND LOWER(p.category) = LOWER(:category)")
-    List<Product> findByPriceBetweenAndCategory(@Param("min") Double min, @Param("max") Double max, @Param("category") String category);
+    Page<Product> findByPriceBetween(Double min, Double max, Pageable pageable);
 
     @Query(value = """
     SELECT   p.masp, p.category, p.price, p.unit, p.stock_quantity,
@@ -39,10 +36,17 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     JOIN sanpham s ON p.masp = s.masp
     WHERE p.price BETWEEN :min AND :max
       AND unaccent(p.category) ILIKE unaccent('%' || :category || '%')
+""", countQuery = """
+    SELECT COUNT(*) FROM chitietsanpham p
+    JOIN sanpham s ON p.masp = s.masp
+    WHERE p.price BETWEEN :min AND :max
+      AND unaccent(p.category) ILIKE unaccent('%' || :category || '%')
 """, nativeQuery = true)
-    List<Product> filterCategoryIgnoreAccent(@Param("min") double min,
-                                             @Param("max") double max,
-                                             @Param("category") String category);
+    Page<Product> filterCategoryIgnoreAccent(
+            @Param("min") double min,
+            @Param("max") double max,
+            @Param("category") String category,
+            Pageable pageable);
     // Lọc sản phẩm ngẫu nhiên
     @Query("SELECT p FROM Product p ORDER BY function('RANDOM')")
     List<Product> findRandomProducts(Pageable pageable);
@@ -50,10 +54,14 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     // Sắp xếp sản phẩm
     List<Product> findAllByOrderByPriceAsc();
     List<Product> findAllByOrderByPriceDesc();
+
+    Page<Product> findByCategory(String category, Pageable pageable);
+
     @Query("SELECT p FROM Product p JOIN ProductTranslation t ON p.masp = t.masp WHERE t.lang = :lang ORDER BY t.name ASC")
-    List<Product> findAllOrderByTranslatedNameAsc(@Param("lang") String lang);
+    Page<Product> findAllOrderByTranslatedNameAsc(@Param("lang") String lang, Pageable pageable);
 
     @Query("SELECT p FROM Product p JOIN ProductTranslation t ON p.masp = t.masp WHERE t.lang = :lang ORDER BY t.name DESC")
-    List<Product> findAllOrderByTranslatedNameDesc(@Param("lang") String lang);
+    Page<Product> findAllOrderByTranslatedNameDesc(@Param("lang") String lang, Pageable pageable);
+
 
 }
