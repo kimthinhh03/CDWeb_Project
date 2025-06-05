@@ -5,7 +5,7 @@
 //
 //@Entity
 //@Table(name = "CTSANPHAM")
-//public class CartItem implements Serializable {
+//public class  CartItem implements Serializable {
 //
 //    @Id
 //    @Column(name = "MaSP")
