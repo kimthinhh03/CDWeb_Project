@@ -14,7 +14,7 @@ const Footer = () => {
                     <div className="footer-col">
                         <h4>{t("aboutUs")}</h4>
                         <p>{t("aboutUsDesc")}</p>
-                        <p>{t("address")}</p>
+                        <p>{t("shopAddress")}</p>
                         <p>{t("hotline")}</p>
                     </div>
 

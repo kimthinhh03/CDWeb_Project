@@ -1,31 +1,51 @@
-document.getElementById('signup-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+import '../css/AuthForm.css';
 
-    const userData = {
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value,
-        fullname: document.getElementById('fullname').value,
-        phone: document.getElementById('phone').value,
-        email: document.getElementById('email').value,
-        address: document.getElementById('address').value
+const SignUp = () => {
+    const { t } = useTranslation();
+    const [form, setForm] = useState({
+        userName: '', password: '', email: '', phone: '',
+        surName: '', lastName: '', address: '', dateOfBirth: '', gender: 'Male'
+    });
+    const [message, setMessage] = useState('');
+
+    const handleChange = e => {
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    try {
-        const response = await fetch('http://localhost:8080/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert("Đăng ký thành công!");
-            window.location.href = "signin.html";
-        } else {
-            document.getElementById('error-message').innerText = result.message || 'Đăng ký thất bại!';
+    const handleSubmit = async e => {
+        e.preventDefault();
+        try {
+            await axios.post('/auth/register', form);
+            setMessage(t('register_success'));
+        } catch (err) {
+            setMessage(t('register_failed'));
         }
-    } catch (error) {
-        document.getElementById('error-message').innerText = 'Lỗi khi đăng ký!';
-    }
-});
+    };
+
+    return (
+        <div className="auth-form">
+            <h2>{t('sign_up')}</h2>
+            <form onSubmit={handleSubmit}>
+                <input type="text" name="userName" placeholder={t('username')} onChange={handleChange} required />
+                <input type="password" name="password" placeholder={t('password')} onChange={handleChange} required />
+                <input type="text" name="email" placeholder={t('email')} onChange={handleChange} required />
+                <input type="text" name="phone" placeholder={t('phone')} onChange={handleChange} required />
+                <input type="text" name="surName" placeholder={t('surname')} onChange={handleChange} required />
+                <input type="text" name="lastName" placeholder={t('lastname')} onChange={handleChange} required />
+                <input type="text" name="address" placeholder={t('address')} onChange={handleChange} required />
+                <input type="date" name="dateOfBirth" onChange={handleChange} required />
+                <select name="gender" onChange={handleChange} required>
+                    <option value="Male">{t('male')}</option>
+                    <option value="Female">{t('female')}</option>
+                </select>
+                <button type="submit">{t('register')}</button>
+                {message && <p className="message">{message}</p>}
+            </form>
+        </div>
+    );
+};
+
+export default SignUp;

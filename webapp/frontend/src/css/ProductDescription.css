@@ -83,3 +83,31 @@
     background-color: #28a745;
     color: #fff;
 }
+.slide-button {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 6px 12px;
+}
+
+.slide-button.left {
+    left: 0;
+}
+
+.slide-button.right {
+    right: 0;
+}
+
+.product-wrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+.product-slide {
+    display: flex;
+}

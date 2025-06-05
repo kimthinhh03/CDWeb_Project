@@ -15,7 +15,7 @@ const LookUp = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await axios.get(`/api/product/search?keyword=${encodeURIComponent(keyword)}`);
+                const res = await axios.get(`/api/product/search?name=${encodeURIComponent(keyword)}`);
                 const data = Array.isArray(res.data) ? res.data : [];
                 setProducts(data);
             } catch (err) {

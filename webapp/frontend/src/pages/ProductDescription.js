@@ -15,6 +15,9 @@ const ProductDescription = () => {
     const [quantity, setQuantity] = useState(1);
     const [error, setError] = useState(null);
 
+    const [slideIndex, setSlideIndex] = useState(0);
+    const visibleCount = 4;
+
     useEffect(() => {
         const lang = i18n.language;
         axios.get(`/api/product/${productID}?lang=${lang}`)
@@ -42,6 +45,22 @@ const ProductDescription = () => {
 
     const decreaseQuantity = () => {
         if (quantity > 0) setQuantity(quantity - 1);
+    };
+
+    const totalSlides = Math.ceil(related.length / visibleCount);
+
+    const next = () => {
+        setSlideIndex((prev) => (prev + 1) % totalSlides);
+    };
+
+    const prev = () => {
+        setSlideIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+    };
+
+    const slideStyle = {
+        transform: `translateX(-${slideIndex * (100 / totalSlides)}%)`,
+        transition: 'transform 0.6s ease-in-out',
+        width: `${(related.length / visibleCount) * 100}%`
     };
 
     if (error) return <div className="text-danger">{t("error")}: {error}</div>;
@@ -112,19 +131,42 @@ const ProductDescription = () => {
 
                 <div className="mt-5">
                     <h5 className="mb-3">{t("relatedProducts")}</h5>
-                    <div className="row">
-                        {related.map(item => (
-                            <div className="col-md-2 text-center mb-4" key={item.masp}>
-                                <Link to={`/product/${item.masp}`} className="text-decoration-none text-dark">
-                                    <img src={`/img/${item.productDetail?.hinhanh}`} alt="" className="img-fluid mb-2" />
-                                    <div>{item.productDetail?.tensp}</div>
-                                    <div className="text-success fw-semibold">
-                                        {item.price?.toLocaleString("vi-VN")} đ
-                                    </div>
-                                </Link>
+                    {related.length > 0 && (
+                        <div className="position-relative">
+                            <button className="slide-button left" onClick={prev}>&#10094;</button>
+                            <button className="slide-button right" onClick={next}>&#10095;</button>
+
+                            <div className="product-wrapper">
+                                <div className="product-slide" style={slideStyle}>
+                                    {related.map((item) => (
+                                        <Link to={`/product/${item.masp}`} className="product-slide-card" key={item.masp}>
+                                            <div className="card h-100 text-center border-0 shadow-sm mx-2">
+                                                <img
+                                                    src={`/img/${item.productDetail?.hinhanh}`}
+                                                    alt={item.productDetail?.tensp}
+                                                    className="card-img-top"
+                                                    style={{ height: '180px', objectFit: 'contain' }}
+                                                    onError={(e) => {
+                                                        e.target.src = '/img/logo.png';
+                                                    }}
+                                                />
+                                                <div className="card-body">
+                                                    <h5 className="text-success">
+                                                        {item.price?.toLocaleString('vi-VN')} đ
+                                                    </h5>
+                                                    <p className="card-text text-dark">
+                                                        {item.productDetail?.tensp?.length > 45
+                                                            ? item.productDetail.tensp.substring(0, 45) + '...'
+                                                            : item.productDetail?.tensp}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
