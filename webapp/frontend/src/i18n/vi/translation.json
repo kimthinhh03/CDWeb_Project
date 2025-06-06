@@ -85,5 +85,17 @@
   "forgot_password_title": "Bạn quên mật khẩu?",
   "send": "Gửi",
   "confirm": "Xác nhận",
-  "otp_code": "Mã xác nhận"
+  "otp_code": "Mã xác nhận",
+  "review": "Đánh giá",
+  "total_reviews": "Đánh giá",
+  "write_review": "Viết đánh giá",
+  "nickname": "Biệt danh",
+  "rating": "Đánh giá chung",
+  "summary": "Tóm tắt đánh giá",
+  "summary_placeholder": "Tóm tắt ngắn gọn...",
+  "image_url": "Hình ảnh (URL)",
+  "detailed_comment": "Đánh giá chi tiết",
+  "submit_review": "Gửi cho chúng tôi",
+  "review_submit_success": "Gửi đánh giá thành công!",
+  "review_submit_error": "Gửi đánh giá thất bại."
 }

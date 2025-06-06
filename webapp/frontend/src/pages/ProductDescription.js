@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import ReviewSection from "../components/ReviewSection";
 
 const ProductDescription = () => {
     const { i18n, t } = useTranslation();
@@ -167,6 +168,9 @@ const ProductDescription = () => {
                             </div>
                         </div>
                     )}
+                </div>
+                <div className="mt-5">
+                    <ReviewSection masp={product.masp} product={product} />
                 </div>
             </div>
         </div>
