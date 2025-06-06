@@ -150,3 +150,45 @@
     margin-top: 8px;
     text-align: center;
 }
+/* SignUp Page Enhancements */
+.signup-page {
+    max-width: 500px;
+    margin: 40px auto;
+    background: #fdfdfd;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 16px rgba(0,0,0,0.06);
+}
+
+.signup-page h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.signup-page form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.signup-page input,
+.signup-page select,
+.signup-page button {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.signup-page button {
+    background-color: #328C52;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.signup-page button:hover {
+    background-color: #276b40;
+}

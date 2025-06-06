@@ -23,7 +23,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     List<Product> findByTenspContainingIgnoreCase(String name);
 
     // Lọc sản phẩm theo danh mục
-    @Query("SELECT p FROM Product p WHERE p.category = :category")
+    @Query("SELECT p FROM Product p WHERE UPPER(p.category) = UPPER(:category)")
     List<Product> findByCategory(@Param("category") String category);
 
     // Lọc theo khoảng giá và category

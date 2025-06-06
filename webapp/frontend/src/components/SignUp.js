@@ -26,7 +26,7 @@ const SignUp = () => {
     };
 
     return (
-        <div className="auth-form">
+        <div className="signup-page">
             <h2>{t('sign_up')}</h2>
             <form onSubmit={handleSubmit}>
                 <input type="text" name="userName" placeholder={t('username')} onChange={handleChange} required />

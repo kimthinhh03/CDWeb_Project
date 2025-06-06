@@ -71,7 +71,8 @@ public class ProductService {
     }
     // Lọc sản phẩm theo danh mục
     public Page<Product> getPageProductsByCategory(String category, String lang, Pageable pageable) {
-        List<Product> products = productRepository.findByCategory(category);
+        String normalized = VietnameseUtils.toUpperNoAccent(category);
+        List<Product> products = productRepository.findByCategory(normalized);
         applyTranslations(products, lang);
         return new PageImpl<>(products, pageable, products.size());
     }
