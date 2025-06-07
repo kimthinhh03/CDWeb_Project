@@ -8,34 +8,66 @@ const SignIn = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [form, setForm] = useState({ userName: '', password: '' });
+    const [touched, setTouched] = useState({});
+    const [errors, setErrors] = useState({});
+    const [errorMsg, setErrorMsg] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
-    const [error, setError] = useState('');
     const [message, setMessage] = useState('');
+    const [successPopup, setSuccessPopup] = useState(false);
+    const validate = (name, value) => {
+        let err = '';
+        if (!value) err = t('field_required');
+        return err;
+    };
 
     const handleChange = e => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm(prev => ({ ...prev, [name]: value }));
+        if (touched[name]) {
+            const err = validate(name, value);
+            setErrors(prev => ({ ...prev, [name]: err }));
+        }
+    };
+
+    const handleBlur = e => {
+        const { name, value } = e.target;
+        setTouched(prev => ({ ...prev, [name]: true }));
+        const err = validate(name, value);
+        setErrors(prev => ({ ...prev, [name]: err }));
     };
 
     const handleSubmit = async e => {
         e.preventDefault();
+
+        const newErrors = {};
+        Object.entries(form).forEach(([key, value]) => {
+            const err = validate(key, value);
+            if (err) newErrors[key] = err;
+        });
+        setErrors(newErrors);
+        if (Object.keys(newErrors).length > 0) return;
+
         try {
             const res = await axios.post('/auth/login', form);
-            const token = res.data.data.token;
+            const { token, user } = res.data.data;
             localStorage.setItem('token', token);
-            alert(t('login_success'));
+            localStorage.setItem('user', JSON.stringify(user));
+
+
+            setSuccessPopup(true);
         } catch (err) {
-            setError(t('login_failed'));
+            setErrorMsg(t('login_failed'));
         }
     };
 
     const handleSendEmail = () => {
-        setMessage('Email sent');
+        setMessage(t('email_sent'));
     };
 
     const handleVerifyOtp = () => {
-        setMessage('OTP verified');
+        setMessage(t('otp_verified'));
     };
 
     return (
@@ -52,21 +84,25 @@ const SignIn = () => {
                             placeholder={t('username')}
                             value={form.userName}
                             onChange={handleChange}
-                            required
+                            onBlur={handleBlur}
                         />
+                        {errors.userName && <p className="error">{errors.userName}</p>}
+
                         <input
                             type="password"
                             name="password"
                             placeholder={t('password')}
                             value={form.password}
                             onChange={handleChange}
-                            required
+                            onBlur={handleBlur}
                         />
+                        {errors.password && <p className="error">{errors.password}</p>}
+
                         <div className="forgot-password">
                             <span onClick={() => setShowPopup(true)}>{t('forgot_password')}</span>
                         </div>
                         <button type="submit">{t('login')}</button>
-                        {error && <p className="error">{error}</p>}
+                        {errorMsg && <p className="error">{errorMsg}</p>}
                     </form>
                 </div>
             </div>
@@ -92,7 +128,7 @@ const SignIn = () => {
                                 type="email"
                                 placeholder={t('email')}
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={e => setEmail(e.target.value)}
                             />
                             <button type="button" onClick={handleSendEmail}>{t('send')}</button>
                         </div>
@@ -101,11 +137,27 @@ const SignIn = () => {
                                 type="text"
                                 placeholder={t('otp_code')}
                                 value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
+                                onChange={e => setOtp(e.target.value)}
                             />
                             <button type="button" onClick={handleVerifyOtp}>{t('confirm')}</button>
                         </div>
                         {message && <p className="message">{message}</p>}
+                    </div>
+                </div>
+            )}
+            {successPopup && (
+                <div className="popup-overlay" onClick={() => setSuccessPopup(false)}>
+                    <div className="popup-content" onClick={e => e.stopPropagation()}>
+                        <h4>{t('login_success')}</h4>
+                        <button
+                            className="popup-btn"
+                            onClick={() => {
+                                setSuccessPopup(false);
+                                window.location.href = '/';
+                            }}
+                        >
+                            {t('back_to_home')}
+                        </button>
                     </div>
                 </div>
             )}

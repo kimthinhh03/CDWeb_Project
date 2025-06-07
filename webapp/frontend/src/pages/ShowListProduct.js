@@ -10,13 +10,12 @@ const ShowListProduct = () => {
     const [products, setProducts] = useState([]);
     const [selectedPrice, setSelectedPrice] = useState(null);
     const [sort, setSort] = useState(null);
-    // Loading sản phẩm
     const [loading, setLoading] = useState(false);
     const [hasLoaded, setHasLoaded] = useState(false);
     const navigate = useNavigate();
-    // Phân trang
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [showFilters, setShowFilters] = useState(false);
 
     const priceRanges = [
         { label: t("priceLabel1"), min: 0, max: 100000 },
@@ -31,16 +30,16 @@ const ShowListProduct = () => {
             setLoading(true);
             const lang = i18n.language;
             let endpoint = "";
+            const encodedCategory = category ? `&category=${encodeURIComponent(category)}` : "";
 
             if (selectedPrice) {
-                const encodedCategory = category ? `&category=${encodeURIComponent(category)}` : "";
                 endpoint = `/api/product/filter?minPrice=${selectedPrice.min}&maxPrice=${selectedPrice.max}${encodedCategory}&lang=${lang}&page=${page}&size=6`;
             } else if (sort === "nameAZ" || sort === "nameZA") {
                 const ascending = sort === "nameAZ";
-                endpoint = `/api/product/sort/name?ascending=${ascending}&lang=${lang}&page=${page}&size=6`;
+                endpoint = `/api/product/sort/name?ascending=${ascending}&lang=${lang}${encodedCategory ? `&category=${encodeURIComponent(category)}` : ''}&page=${page}&size=6`;
             } else if (sort === "priceAZ" || sort === "priceZA") {
                 const ascending = sort === "priceAZ";
-                endpoint = `/api/product/sort/price?ascending=${ascending}&lang=${lang}&page=${page}&size=6`;
+                endpoint = `/api/product/sort/price?ascending=${ascending}${encodedCategory ? `&category=${encodeURIComponent(category)}` : ''}&page=${page}&size=6`;
             } else if (category) {
                 endpoint = `/api/product/category/${encodeURIComponent(category)}?lang=${lang}&page=${page}&size=6`;
             } else {
@@ -60,14 +59,23 @@ const ShowListProduct = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, [category, selectedPrice, sort, page]);
+    }, [category, selectedPrice, sort, page, i18n.language]);
 
     const handlePriceClick = (range) => {
         setPage(0);
         if (selectedPrice?.min === range.min && selectedPrice?.max === range.max) {
-            fetchProducts();
+            setSelectedPrice(null);
         } else {
             setSelectedPrice(range);
+        }
+    };
+
+    const handleSortClick = (sortType) => {
+        setPage(0);
+        if (sort === sortType) {
+            setSort(null);
+        } else {
+            setSort(sortType);
         }
     };
 
@@ -75,13 +83,26 @@ const ShowListProduct = () => {
         setSelectedPrice(null);
         setSort(null);
         setPage(0);
-        navigate(0);
+    };
+
+    const applyFilters = () => {
+        setPage(0);
+        fetchProducts();
     };
 
     return (
         <div className="container my-4 show-list">
             <div className="row">
-                <div className="col-md-3 filter-section">
+                <div className="d-md-none mb-3">
+                    <button
+                        className="btn btn-success w-100"
+                        onClick={() => setShowFilters(!showFilters)}
+                    >
+                        {showFilters ? t("hideFilters") : t("showFilters")}
+                    </button>
+                </div>
+
+                <div className={`col-md-3 filter-section ${showFilters ? 'd-block' : 'd-none d-md-block'}`}>
                     <h6>{t("brand")}</h6>
                     <p className="text-muted">{t("notAvailable")}</p>
                     <hr />
@@ -96,18 +117,47 @@ const ShowListProduct = () => {
                                 checked={selectedPrice?.min === range.min && selectedPrice?.max === range.max}
                                 onChange={() => handlePriceClick(range)}
                             />
-                            <label className="form-check-label" htmlFor={`price-${index}`}>{range.label}</label>
+                            <label className="form-check-label" htmlFor={`price-${index}`}>
+                                {range.label}
+                            </label>
                         </div>
                     ))}
                     <hr />
                     <h6>{t("sortBy")}</h6>
                     <div className="d-flex flex-column gap-1">
-                        <button className="btn btn-sm btn-outline-secondary" onClick={() => setSort("nameAZ")}>{t("sortNameAZ")}</button>
-                        <button className="btn btn-sm btn-outline-secondary" onClick={() => setSort("nameZA")}>{t("sortNameZA")}</button>
-                        <button className="btn btn-sm btn-outline-secondary" onClick={() => setSort("priceAZ")}>{t("sortPriceAZ")}</button>
-                        <button className="btn btn-sm btn-outline-secondary" onClick={() => setSort("priceZA")}>{t("sortPriceZA")}</button>
+                        <button
+                            className={`btn btn-sm ${sort === "nameAZ" ? "btn-primary" : "btn-outline-secondary"}`}
+                            onClick={() => handleSortClick("nameAZ")}
+                        >
+                            {t("sortNameAZ")}
+                        </button>
+                        <button
+                            className={`btn btn-sm ${sort === "nameZA" ? "btn-primary" : "btn-outline-secondary"}`}
+                            onClick={() => handleSortClick("nameZA")}
+                        >
+                            {t("sortNameZA")}
+                        </button>
+                        <button
+                            className={`btn btn-sm ${sort === "priceAZ" ? "btn-primary" : "btn-outline-secondary"}`}
+                            onClick={() => handleSortClick("priceAZ")}
+                        >
+                            {t("sortPriceAZ")}
+                        </button>
+                        <button
+                            className={`btn btn-sm ${sort === "priceZA" ? "btn-primary" : "btn-outline-secondary"}`}
+                            onClick={() => handleSortClick("priceZA")}
+                        >
+                            {t("sortPriceZA")}
+                        </button>
                     </div>
-                    <button className="btn btn-success w-100 mt-3" onClick={resetFilters}>{t("reset")}</button>
+                    <div className="d-flex gap-2 mt-3">
+                        <button className="btn btn-outline-secondary flex-grow-1" onClick={resetFilters}>
+                            {t("reset")}
+                        </button>
+                        <button className="btn btn-success flex-grow-1" onClick={applyFilters}>
+                            {t("applyFilters")}
+                        </button>
+                    </div>
                 </div>
 
                 <div className="col-md-9">
@@ -144,7 +194,6 @@ const ShowListProduct = () => {
                         )}
                     </div>
 
-                    {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="d-flex justify-content-center mt-4">
                             <button

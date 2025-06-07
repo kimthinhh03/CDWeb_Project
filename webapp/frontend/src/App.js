@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProductList from './pages/ProductList';
@@ -14,12 +14,20 @@ import Banner from "./components/Banner";
 import Cosmestic from "./components/Cosmestic";
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
+import Cart from './components/Cart';
 
 const App = () => {
     const location = useLocation();
+    const [user, setUser] = useState(null);
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
     return (
         <>
-            <Header />
+            <Header user={user} />
             <main className="container mt-4">
             {/*<main>*/}
                 {/* eslint-disable-next-line no-restricted-globals */}
@@ -29,6 +37,7 @@ const App = () => {
                 <Routes>
                     <Route path="/signin" element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />
+                    <Route path="/cart" element={<Cart />} />
                     <Route path="/" element={<ProductList />} />
                     <Route path="/product/:productID" element={<ProductDescription />} />
                     <Route path="/products" element={<ShowListProduct />} />

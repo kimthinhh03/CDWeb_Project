@@ -113,16 +113,34 @@ public class ProductService {
         return page;
     }
 
-    // Sắp xếp sản phẩm theo tên
-    public Page<Product> sortProductsByName(boolean ascending, String lang, Pageable pageable) {
-        return ascending
-                ? productRepository.findAllOrderByTranslatedNameAsc(lang, pageable)
-                : productRepository.findAllOrderByTranslatedNameDesc(lang, pageable);
+    // Sắp xếp sản phẩm theo tên (có thể theo danh mục)
+    public Page<Product> sortProductsByName(boolean ascending, String lang, String category, Pageable pageable) {
+        if (category != null) {
+            return ascending ?
+                    productRepository.findByCategoryOrderByNameAsc(category, lang, pageable) :
+                    productRepository.findByCategoryOrderByNameDesc(category, lang, pageable);
+        }
+        return ascending ?
+                productRepository.findAllOrderByNameAsc(lang, pageable) :
+                productRepository.findAllOrderByNameDesc(lang, pageable);
     }
-    // Sắp xếp sản phẩm theo giá
-    public Page<Product> sortProductsByPrice(boolean ascending, Pageable pageable) {
+
+    // Sắp xếp sản phẩm theo giá (có thể theo danh mục)
+    public Page<Product> sortProductsByPrice(boolean ascending, String category, Pageable pageable) {
         Sort sort = ascending ? Sort.by("price").ascending() : Sort.by("price").descending();
-        return productRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort));
+        if (category != null && !category.isEmpty()) {
+            return productRepository.findByCategory(category, PageRequest.of(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
+                    sort
+            ));
+        } else {
+            return productRepository.findAll(PageRequest.of(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
+                    sort
+            ));
+        }
     }
 
     // Thêm sản phẩm mới

@@ -38,7 +38,41 @@ const ProductDescription = () => {
         const num = Math.min(parseInt(value || "0"), stock);
         setQuantity(num);
     };
+    const handleAddToCart = async () => {
+        const storedUser = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
 
+        if (!storedUser || !token) {
+            alert(t('please_login_to_continue'));
+            return;
+        }
+
+        const user = JSON.parse(storedUser);
+
+        try {
+            await axios.post(
+                `http://localhost:8888/api/cart/${user.userName}/add`,
+                {
+                    masp: product.masp,
+                    quantity: quantity,
+                    price: product.price,
+                    hinhanh: product.productDetail?.hinhanh,
+                    tensp: product.productDetail?.tensp,
+                    unit: product.unit
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            alert(t('added_to_cart_success'));
+        } catch (err) {
+            console.error(err);
+            alert(t('add_to_cart_failed'));
+        }
+    };
     const increaseQuantity = () => {
         const stock = product?.stockQuantity || 0;
         if (quantity < stock) setQuantity(quantity + 1);
@@ -117,7 +151,9 @@ const ProductDescription = () => {
                         </div>
 
                         <div className="d-flex gap-2">
-                            <button className="btn btn-success">{t("addToCart")}</button>
+                            <button className="btn btn-success" onClick={handleAddToCart}>
+                                {t("addToCart")}
+                            </button>
                             <button className="btn btn-outline-success">{t("checkout")}</button>
                         </div>
                     </div>
