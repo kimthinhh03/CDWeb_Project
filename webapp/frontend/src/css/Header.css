@@ -164,3 +164,20 @@
 .nav a:hover {
     color: #007bff;
 }
+.greeting-user {
+    margin: 0 10px;
+    color: #000;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.logout-link {
+    font-size: 80%;
+    color: #5f9ea0;
+    margin-left: 8px;
+    text-decoration: none;
+}
+
+.logout-link:hover {
+    text-decoration: underline;
+}

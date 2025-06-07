@@ -57,11 +57,22 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     Page<Product> findByCategory(String category, Pageable pageable);
 
-    @Query("SELECT p FROM Product p JOIN ProductTranslation t ON p.masp = t.masp WHERE t.lang = :lang ORDER BY t.name ASC")
-    Page<Product> findAllOrderByTranslatedNameAsc(@Param("lang") String lang, Pageable pageable);
+    @Query("SELECT p FROM Product p JOIN FETCH p.translations t WHERE t.lang = :lang ORDER BY t.name ASC")
+    Page<Product> findAllOrderByNameAsc(@Param("lang") String lang, Pageable pageable);
 
-    @Query("SELECT p FROM Product p JOIN ProductTranslation t ON p.masp = t.masp WHERE t.lang = :lang ORDER BY t.name DESC")
-    Page<Product> findAllOrderByTranslatedNameDesc(@Param("lang") String lang, Pageable pageable);
+    @Query("SELECT p FROM Product p JOIN FETCH p.translations t WHERE t.lang = :lang ORDER BY t.name DESC")
+    Page<Product> findAllOrderByNameDesc(@Param("lang") String lang, Pageable pageable);
+    @Query("SELECT p FROM Product p JOIN FETCH p.translations t WHERE p.category = :category AND t.lang = :lang ORDER BY t.name ASC")
+    Page<Product> findByCategoryOrderByNameAsc(
+            @Param("category") String category,
+            @Param("lang") String lang,
+            Pageable pageable
+    );
 
-
+    @Query("SELECT p FROM Product p JOIN FETCH p.translations t WHERE p.category = :category AND t.lang = :lang ORDER BY t.name DESC")
+    Page<Product> findByCategoryOrderByNameDesc(
+            @Param("category") String category,
+            @Param("lang") String lang,
+            Pageable pageable
+    );
 }

@@ -118,28 +118,26 @@ public class ProductController {
         }
     }
 
-    // Sắp xếp sản phẩm theo tên
+    // Sắp xếp sản phẩm theo tên (có thể theo danh mục)
     @GetMapping("/sort/name")
     public Page<Product> sortProductsByName(
             @RequestParam boolean ascending,
             @RequestParam(defaultValue = "vi") String lang,
+            @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return productService.sortProductsByName(ascending, lang, pageable);
+            @RequestParam(defaultValue = "6") int size) {
+        return productService.sortProductsByName(ascending, lang, category, PageRequest.of(page, size));
     }
-    // Sắp xếp sản phẩm theo giá
+
+    // Sắp xếp sản phẩm theo giá (có thể theo danh mục)
     @GetMapping("/sort/price")
     public Page<Product> sortProductsByPrice(
             @RequestParam boolean ascending,
+            @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return productService.sortProductsByPrice(ascending, pageable);
+            @RequestParam(defaultValue = "6") int size) {
+        return productService.sortProductsByPrice(ascending, category, PageRequest.of(page, size));
     }
-
     // Thêm sản phẩm mới
     @PostMapping("/addProduct")
     public Product createProduct(@RequestBody Product product) {

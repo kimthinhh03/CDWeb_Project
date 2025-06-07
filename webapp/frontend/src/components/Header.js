@@ -9,7 +9,7 @@ const Header = ({ user }) => {
     const { t, i18n } = useTranslation();
     const [keyword, setKeyword] = useState("");
     const navigate = useNavigate();
-    const isAdmin = user?.rolename === 'addmin';
+    // const isAdmin = user?.rolename === 'addmin';
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -75,19 +75,16 @@ const Header = ({ user }) => {
                     <option value="kr">KR</option>
                 </select>
 
-                <Link to={user ? '/tocart' : '/signin'}>
+                <Link to={user ? '/cart' : '/signin'}>
                     <img src="/img/cart4.svg" alt="Giỏ hàng" />
                 </Link>
 
                 {user ? (
                     <>
-                        <p style={{ color: 'black', margin: '0px 10px' }}>{t("greeting")}, {user.tenkh}</p>
-                        <a href="/logout" style={{ fontSize: '80%', color: '#5f9ea0' }}>{t("logout")}</a>
-                        {isAdmin && (
-                            <Link to="/admin/users" style={{ fontSize: '80%', color: '#5f9ea0' }}>
-                                {t("userManagement")}
-                            </Link>
-                        )}
+                        <p className="greeting-user">{t("greeting")}, {user.userName}</p>
+                        <Link to="/" onClick={() => { localStorage.clear(); window.location.reload(); }}>
+                            {t("logout")}
+                        </Link>
                     </>
                 ) : (
                     <Link to="/signin">
