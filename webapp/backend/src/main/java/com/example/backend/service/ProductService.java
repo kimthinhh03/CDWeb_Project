@@ -115,21 +115,22 @@ public class ProductService {
 
     // Sắp xếp sản phẩm theo tên (có thể theo danh mục)
     public Page<Product> sortProductsByName(boolean ascending, String lang, String category, Pageable pageable) {
-        if (category != null) {
+        if (category != null && !category.isEmpty()) {
+            String normalized = VietnameseUtils.toUpperNoAccent(category);  // 👈 chuẩn hoá
             return ascending ?
-                    productRepository.findByCategoryOrderByNameAsc(category, lang, pageable) :
-                    productRepository.findByCategoryOrderByNameDesc(category, lang, pageable);
+                    productRepository.findByCategoryOrderByNameAsc(normalized, lang, pageable) :
+                    productRepository.findByCategoryOrderByNameDesc(normalized, lang, pageable);
         }
         return ascending ?
                 productRepository.findAllOrderByNameAsc(lang, pageable) :
                 productRepository.findAllOrderByNameDesc(lang, pageable);
     }
-
     // Sắp xếp sản phẩm theo giá (có thể theo danh mục)
     public Page<Product> sortProductsByPrice(boolean ascending, String category, Pageable pageable) {
         Sort sort = ascending ? Sort.by("price").ascending() : Sort.by("price").descending();
         if (category != null && !category.isEmpty()) {
-            return productRepository.findByCategory(category, PageRequest.of(
+            String normalized = VietnameseUtils.toUpperNoAccent(category);
+            return productRepository.findByCategory(normalized, PageRequest.of(
                     pageable.getPageNumber(),
                     pageable.getPageSize(),
                     sort

@@ -116,5 +116,7 @@
   "back_to_home": "Quay về trang chủ",
   "added_to_cart_success": "Đã thêm vào giỏ hàng!",
   "add_to_cart_failed": "Thêm vào giỏ hàng thất bại!",
-  "please_login_to_continue": "Vui lòng đăng nhập để tiếp tục"
+  "please_login_to_continue": "Vui lòng đăng nhập để tiếp tục",
+  "cart_empty_title": "Giỏ hàng của bạn đang trống",
+  "cart_empty_desc": "Hãy chọn sản phẩm yêu thích và thêm vào giỏ hàng!"
 }
