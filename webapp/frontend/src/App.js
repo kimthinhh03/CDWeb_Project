@@ -15,6 +15,9 @@ import Cosmestic from "./components/Cosmestic";
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Cart from './components/Cart';
+import { CartProvider } from './contexts/CartContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
     const location = useLocation();
@@ -28,6 +31,7 @@ const App = () => {
     return (
         <>
             <Header user={user} />
+            <CartProvider>
             <main className="container mt-4">
             {/*<main>*/}
                 {/* eslint-disable-next-line no-restricted-globals */}
@@ -45,7 +49,17 @@ const App = () => {
                     <Route path="/lookup" element={<LookUp />} />
                 </Routes>
             </main>
+            </CartProvider>
             <Footer />
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                pauseOnHover
+                draggable
+                theme="colored"
+                style={{ marginTop: "80px" }}
+            />
         </>
     );
 };

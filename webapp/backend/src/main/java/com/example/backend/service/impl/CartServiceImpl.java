@@ -33,13 +33,13 @@ public class CartServiceImpl implements CartService {
         item.setTensp(dto.getTensp());
         item.setHinhanh(dto.getHinhanh());
         item.setPrice(dto.getPrice());
-        item.setQuantity(dto.getQuantity());
         item.setUnit(dto.getUnit());
+        item.setQuantity(dto.getQuantity());
         item.setTotalPrice(dto.getPrice() * dto.getQuantity());
         item.setCart(cart);
 
-        cart.getItems().add(item);
         itemRepo.save(item);
+        cart.getItems().add(item);
         return cartRepo.save(cart);
     }
 

@@ -7,6 +7,8 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import ReviewSection from "../components/ReviewSection";
+import { useCart } from '../contexts/CartContext';
+import { toast } from 'react-toastify';
 
 const ProductDescription = () => {
     const { i18n, t } = useTranslation();
@@ -15,7 +17,7 @@ const ProductDescription = () => {
     const [related, setRelated] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [error, setError] = useState(null);
-
+    const { cartItems, updateCart } = useCart();
     const [slideIndex, setSlideIndex] = useState(0);
     const visibleCount = 4;
 
@@ -43,7 +45,7 @@ const ProductDescription = () => {
         const token = localStorage.getItem('token');
 
         if (!storedUser || !token) {
-            alert(t('please_login_to_continue'));
+            toast.warning(t('please_login_to_continue'));
             return;
         }
 
@@ -67,10 +69,10 @@ const ProductDescription = () => {
                 }
             );
 
-            alert(t('added_to_cart_success'));
+            toast.success(t('added_to_cart_success') || "Đã thêm vào giỏ hàng");
         } catch (err) {
             console.error(err);
-            alert(t('add_to_cart_failed'));
+            toast.error(t('add_to_cart_failed') || "Thêm vào giỏ hàng thất bại");
         }
     };
     const increaseQuantity = () => {
