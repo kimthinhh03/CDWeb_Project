@@ -1,5 +1,6 @@
 package com.example.backend.dto;
 
+import com.example.backend.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserDTO {
     private Integer id;
-    private Boolean role;
+    private Role role;
     private String userName;
     private String email;
     private String phone;

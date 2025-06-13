@@ -9,7 +9,7 @@ const Header = ({ user }) => {
     const { t, i18n } = useTranslation();
     const [keyword, setKeyword] = useState("");
     const navigate = useNavigate();
-    // const isAdmin = user?.rolename === 'addmin';
+    const isAdmin = user?.role?.name === 'ROLE_ADMIN';
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -31,23 +31,35 @@ const Header = ({ user }) => {
                 <ul className="nav">
                     <li><Link to="/">{t("home")}</Link></li>
                     <li>
-                        <div className="dropdown">
-                            <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                {t("productCategories")}
-                            </button>
-                            <ul className="dropdown-menu">
-                                {categories.map((type, index) => (
-                                    <li key={index}>
-                                        <Link
-                                            className="dropdown-item"
-                                            to={`/products/category/${encodeURIComponent(type)}`}
-                                        >
-                                            {type}
+                        {isAdmin ? (
+                            <div className="dropdown">
+                                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    {t("management")}
+                                </button>
+                                <ul className="dropdown-menu">
+                                    <li>
+                                        <Link className="dropdown-item" to="/admin/products">
+                                            {t("product_management")}
                                         </Link>
                                     </li>
-                                ))}
-                            </ul>
-                        </div>
+                                </ul>
+                            </div>
+                        ) : (
+                            <div className="dropdown">
+                                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    {t("productCategories")}
+                                </button>
+                                <ul className="dropdown-menu">
+                                    {categories.map((type, index) => (
+                                        <li key={index}>
+                                            <Link className="dropdown-item" to={`/products/category/${encodeURIComponent(type)}`}>
+                                                {type}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </li>
                 </ul>
             </div>

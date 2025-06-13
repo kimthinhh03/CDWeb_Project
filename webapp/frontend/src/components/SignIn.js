@@ -3,23 +3,25 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import '../css/AuthForm.css';
+import i18n from 'i18next';
 
-const SignIn = () => {
+const SignIn = ({ setUser }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+
     const [form, setForm] = useState({ userName: '', password: '' });
     const [touched, setTouched] = useState({});
     const [errors, setErrors] = useState({});
     const [errorMsg, setErrorMsg] = useState('');
+    const [successPopup, setSuccessPopup] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
     const [message, setMessage] = useState('');
-    const [successPopup, setSuccessPopup] = useState(false);
+
     const validate = (name, value) => {
-        let err = '';
-        if (!value) err = t('field_required');
-        return err;
+        if (!value) return t('field_required');
+        return '';
     };
 
     const handleChange = e => {
@@ -41,23 +43,27 @@ const SignIn = () => {
     const handleSubmit = async e => {
         e.preventDefault();
 
+        // Validate all fields
         const newErrors = {};
         Object.entries(form).forEach(([key, value]) => {
             const err = validate(key, value);
             if (err) newErrors[key] = err;
         });
         setErrors(newErrors);
+
         if (Object.keys(newErrors).length > 0) return;
 
         try {
             const res = await axios.post('/auth/login', form);
             const { token, user } = res.data.data;
+
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
-
-
+            setUser(user);
+            setErrorMsg('');
             setSuccessPopup(true);
         } catch (err) {
+            console.error(err);
             setErrorMsg(t('login_failed'));
         }
     };
@@ -101,6 +107,7 @@ const SignIn = () => {
                         <div className="forgot-password">
                             <span onClick={() => setShowPopup(true)}>{t('forgot_password')}</span>
                         </div>
+
                         <button type="submit">{t('login')}</button>
                         {errorMsg && <p className="error">{errorMsg}</p>}
                     </form>
@@ -145,6 +152,7 @@ const SignIn = () => {
                     </div>
                 </div>
             )}
+
             {successPopup && (
                 <div className="popup-overlay" onClick={() => setSuccessPopup(false)}>
                     <div className="popup-content" onClick={e => e.stopPropagation()}>
@@ -153,6 +161,7 @@ const SignIn = () => {
                             className="popup-btn"
                             onClick={() => {
                                 setSuccessPopup(false);
+                                localStorage.setItem('lang', i18n.language);
                                 window.location.href = '/';
                             }}
                         >
