@@ -18,6 +18,8 @@ import Cart from './components/Cart';
 import { CartProvider } from './contexts/CartContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminProductList from './components/AdminProductList';
+import AdminRoute from './components/AdminRoute';
 
 const App = () => {
     const location = useLocation();
@@ -25,9 +27,14 @@ const App = () => {
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
+            // setUser(JSON.parse(storedUser));
+            const parsed = JSON.parse(storedUser);
+            console.log("Parsed user:", parsed);
+            setUser(parsed);
+        } else {
+            setUser(null);
+            }
+    },  [location.pathname]);
     return (
         <>
             <Header user={user} />
@@ -39,7 +46,7 @@ const App = () => {
                 {location.pathname === "/" && <NewProducts />}
                 {location.pathname === "/" && <Cosmestic />}
                 <Routes>
-                    <Route path="/signin" element={<SignIn />} />
+                    <Route path="/signin" element={<SignIn setUser={setUser} />} />
                     <Route path="/signup" element={<SignUp />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/" element={<ProductList />} />
@@ -47,6 +54,11 @@ const App = () => {
                     <Route path="/products" element={<ShowListProduct />} />
                     <Route path="/products/category/:category" element={<ShowListProduct />} />
                     <Route path="/lookup" element={<LookUp />} />
+                    <Route path="/admin/products" element={
+                        <AdminRoute>
+                            <AdminProductList />
+                        </AdminRoute>
+                    } />
                 </Routes>
             </main>
             </CartProvider>

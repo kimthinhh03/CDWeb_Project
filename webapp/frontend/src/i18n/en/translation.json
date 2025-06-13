@@ -60,5 +60,8 @@
   "stockLeft": "Remaining stock",
   "checkout": "Checkout",
   "descriptionTitle": "Product Description",
-  "relatedProducts": "Related Products"
+  "relatedProducts": "Related Products",
+  "management": "Management",
+  "product_management": "Product Management",
+  "stock_quantity": "Stock left"
 }

@@ -16,6 +16,10 @@ i18n
             kr: { translation: kr },
         },
         fallbackLng: 'vi',
+        detection: {
+            order: ['localStorage', 'navigator'],
+            caches: ['localStorage'],
+        },
         interpolation: {
             escapeValue: false
         }

@@ -4,7 +4,9 @@ import com.example.backend.dto.LoginRequestDTO;
 import com.example.backend.dto.LoginResponseDTO;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.UserRegistrationDTO;
+import com.example.backend.model.Role;
 import com.example.backend.model.User;
+import com.example.backend.repository.RoleRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.security.JwtTokenProvider;
 import com.example.backend.service.UserService;
@@ -31,25 +33,27 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Override
     @Transactional
     public UserDTO registerUser(UserRegistrationDTO registrationDTO) {
-        // Kiểm tra username đã tồn tại
         if (userRepository.existsByUserName(registrationDTO.getUserName())) {
             throw new IllegalArgumentException("Username already exists");
         }
 
-        // Kiểm tra email đã tồn tại
         if (userRepository.existsByEmail(registrationDTO.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        // Kiểm tra phone đã tồn tại
         if (userRepository.existsByPhone(registrationDTO.getPhone())) {
             throw new IllegalArgumentException("Phone number already exists");
         }
 
-        // Tạo user mới
+        Role customerRole = roleRepository.findByName("ROLE_CUSTOMER")
+                .orElseThrow(() -> new RuntimeException("Default role not found"));
+
         User user = new User();
         user.setUserName(registrationDTO.getUserName());
         user.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
@@ -61,8 +65,8 @@ public class UserServiceImpl implements UserService {
         user.setDateOfBirth(registrationDTO.getDateOfBirth());
         user.setGender(registrationDTO.getGender());
 
-        user.setRole(false); // mặc định là user
-        user.setActive(1); //kích hoạt ngay
+        user.setRole(customerRole);
+        user.setActive(1);
         user.setLoginTimes(0);
         user.setLockFail(0);
         user.setCreateAt(LocalDateTime.now());
@@ -74,30 +78,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginResponseDTO login(LoginRequestDTO loginRequest) {
-        // Tìm user theo username
         User user = userRepository.findByUserName(loginRequest.getUserName())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
 
-        // Kiểm tra password
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid username or password");
         }
 
-        // Kiểm tra account có active không
         if (user.getActive() == 0) {
             throw new IllegalArgumentException("Account is not activated");
         }
 
-        // Cập nhật login times
         user.setLoginTimes(user.getLoginTimes() + 1);
         user.setUpdateAt(LocalDateTime.now());
         userRepository.save(user);
 
-        // Tạo authorities
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole() ? "ROLE_ADMIN" : "ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
 
-        // Tạo JWT tokens
         String accessToken = jwtTokenProvider.generateTokenFromUsername(user.getUserName(), authorities);
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getUserName());
 
@@ -108,8 +106,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-
-
     @Override
     public UserDTO getUserByUsername(String username) {
         User user = userRepository.findByUserName(username)
@@ -117,14 +113,10 @@ public class UserServiceImpl implements UserService {
         return convertToDTO(user);
     }
 
-
-
     @Override
     public boolean verifyPasswordResetToken(String token) {
         return userRepository.findByPasswordResetToken(token).isPresent();
     }
-
-
 
     private UserDTO convertToDTO(User user) {
         return UserDTO.builder()
