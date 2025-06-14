@@ -20,6 +20,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AdminProductList from './components/AdminProductList';
 import AdminRoute from './components/AdminRoute';
+import UpdateHistoryPage from "./components/UpdateHistoryPage";
 
 const App = () => {
     const location = useLocation();
@@ -59,6 +60,7 @@ const App = () => {
                             <AdminProductList />
                         </AdminRoute>
                     } />
+                    <Route path="/admin/update-history" element={<UpdateHistoryPage />} />
                 </Routes>
             </main>
             </CartProvider>

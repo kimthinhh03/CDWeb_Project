@@ -178,13 +178,13 @@ const ShowListProduct = () => {
                                     <Link to={`/product/${product.masp}`} className="text-decoration-none">
                                         <div className="card product-card">
                                             <img
-                                                src={`/img/${product.productDetail?.hinhanh}`}
+                                                src={`/img/${product.hinhanh}`}
                                                 className="card-img-top"
-                                                alt={product.productDetail?.tensp}
+                                                alt={product.tensp}
                                                 onError={(e) => { e.target.src = "/img/logo.png"; }}
                                             />
                                             <div className="card-body">
-                                                <h6>{product.productDetail?.tensp}</h6>
+                                                <h6>{product.tensp}</h6>
                                                 <h5>{product.price?.toLocaleString("vi-VN")} <u>đ</u></h5>
                                             </div>
                                         </div>

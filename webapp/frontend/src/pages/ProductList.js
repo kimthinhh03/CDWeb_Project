@@ -67,7 +67,7 @@ const ProductList = () => {
                                     <div className="card product-card">
                                         <img
                                             src={`/img/${product.hinhanh}`}
-                                            alt={product.productDetail?.tensp}
+                                            alt={product.tensp}
                                             className="card-img-top"
                                             height="200"
                                             onError={(e) => {
@@ -76,7 +76,7 @@ const ProductList = () => {
                                         />
                                         <div className="card-body">
                                             <h5 className="card-title">
-                                                {product.productDetail?.tensp || "Không có tên"}
+                                                {product.tensp || "Không có tên"}
                                             </h5>
                                             <h6 className="card-price text-success">
                                                 {product.price?.toLocaleString("vi-VN")} <u>đ</u>

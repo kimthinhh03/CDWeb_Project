@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import "../css/ProductDescription.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import ReviewSection from "../components/ReviewSection";
 import { useCart } from '../contexts/CartContext';
 import { toast } from 'react-toastify';
@@ -17,7 +16,7 @@ const ProductDescription = () => {
     const [related, setRelated] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [error, setError] = useState(null);
-    const { cartItems, updateCart } = useCart();
+    const { updateCart } = useCart();
     const [slideIndex, setSlideIndex] = useState(0);
     const visibleCount = 4;
 
@@ -40,6 +39,7 @@ const ProductDescription = () => {
         const num = Math.min(parseInt(value || "0"), stock);
         setQuantity(num);
     };
+
     const handleAddToCart = async () => {
         const storedUser = localStorage.getItem('user');
         const token = localStorage.getItem('token');
@@ -58,8 +58,8 @@ const ProductDescription = () => {
                     masp: product.masp,
                     quantity: quantity,
                     price: product.price,
-                    hinhanh: product.productDetail?.hinhanh,
-                    tensp: product.productDetail?.tensp,
+                    hinhanh: product.hinhanh,
+                    tensp: product.tensp,
                     unit: product.unit
                 },
                 {
@@ -75,6 +75,7 @@ const ProductDescription = () => {
             toast.error(t('add_to_cart_failed') || "Thêm vào giỏ hàng thất bại");
         }
     };
+
     const increaseQuantity = () => {
         const stock = product?.stockQuantity || 0;
         if (quantity < stock) setQuantity(quantity + 1);
@@ -85,14 +86,8 @@ const ProductDescription = () => {
     };
 
     const totalSlides = Math.ceil(related.length / visibleCount);
-
-    const next = () => {
-        setSlideIndex((prev) => (prev + 1) % totalSlides);
-    };
-
-    const prev = () => {
-        setSlideIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
-    };
+    const next = () => setSlideIndex((prev) => (prev + 1) % totalSlides);
+    const prev = () => setSlideIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
 
     const slideStyle = {
         transform: `translateX(-${slideIndex * (100 / totalSlides)}%)`,
@@ -113,16 +108,16 @@ const ProductDescription = () => {
                 <div className="row">
                     <div className="col-md-5 text-center">
                         <img
-                            src={`/img/${product.productDetail?.hinhanh}`}
-                            alt={product.productDetail?.tensp}
+                            src={`/img/${product.hinhanh}`}
+                            alt={product.tensp}
                             className="product-image"
                         />
                     </div>
                     <div className="col-md-7">
-                        <h2 className="product-title">{product.productDetail?.tensp}</h2>
+                        <h2 className="product-title">{product.tensp}</h2>
                         <div className="mb-2">
                             <span className="text-muted">{t("brand")}: </span>
-                            <span className="text-success fw-semibold">{product.productDetail?.nhacungcap}</span>
+                            <span className="text-success fw-semibold">{product.nhacungcap}</span>
                             <span className="ms-4 text-muted">{t("status")}: </span>
                             <span className={product.stockQuantity ? "text-success" : "text-danger"}>
                                 {product.stockQuantity ? t("inStock") : t("outOfStock")}
@@ -164,7 +159,7 @@ const ProductDescription = () => {
                 <div className="mt-5">
                     <h5 className="mb-3">{t("descriptionTitle")}</h5>
                     <div className="border p-3 rounded bg-light">
-                        {product.productDetail?.mota}
+                        {product.mota}
                     </div>
                 </div>
 
@@ -181,8 +176,8 @@ const ProductDescription = () => {
                                         <Link to={`/product/${item.masp}`} className="product-slide-card" key={item.masp}>
                                             <div className="card h-100 text-center border-0 shadow-sm mx-2">
                                                 <img
-                                                    src={`/img/${item.productDetail?.hinhanh}`}
-                                                    alt={item.productDetail?.tensp}
+                                                    src={`/img/${item.hinhanh}`}
+                                                    alt={item.tensp}
                                                     className="card-img-top"
                                                     style={{ height: '180px', objectFit: 'contain' }}
                                                     onError={(e) => {
@@ -194,9 +189,9 @@ const ProductDescription = () => {
                                                         {item.price?.toLocaleString('vi-VN')} đ
                                                     </h5>
                                                     <p className="card-text text-dark">
-                                                        {item.productDetail?.tensp?.length > 45
-                                                            ? item.productDetail.tensp.substring(0, 45) + '...'
-                                                            : item.productDetail?.tensp}
+                                                        {item.tensp?.length > 45
+                                                            ? item.tensp.substring(0, 45) + '...'
+                                                            : item.tensp}
                                                     </p>
                                                 </div>
                                             </div>
@@ -207,6 +202,7 @@ const ProductDescription = () => {
                         </div>
                     )}
                 </div>
+
                 <div className="mt-5">
                     <ReviewSection masp={product.masp} product={product} />
                 </div>

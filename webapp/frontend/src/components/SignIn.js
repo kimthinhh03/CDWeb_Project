@@ -59,6 +59,7 @@ const SignIn = ({ setUser }) => {
 
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('username', user.userName);
             setUser(user);
             setErrorMsg('');
             setSuccessPopup(true);
