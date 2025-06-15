@@ -114,7 +114,7 @@ const AdminProductList = () => {
                         )
                     );
                 }
-                
+
                 axios.get('/api/product/all', { params: { lang: 'vi' } }).then(res => setProducts(res.data));
 
                 setConfirmEditOpen(false);
