@@ -37,7 +37,7 @@ const ReviewSection = ({ masp, product }) => {
                         <div className="bar">
                             <div
                                 className="fill"
-                                style={{ width: `${(stats.ratings[star] || 0) / (stats.total || 1) * 100}%` }}
+                                style={{width: `${(stats.ratings[star] || 0) / (stats.total || 1) * 100}%`}}
                             ></div>
                         </div>
                         <span>({stats.ratings[star] || 0})</span>
@@ -49,18 +49,26 @@ const ReviewSection = ({ masp, product }) => {
             </div>
 
             <div className="review-right">
-                {reviews.map((r) => (
-                    <div key={r.id} className="review-item">
-                        <div className="review-header">
-                            <strong>{r.nickname}</strong> <span>{new Date(r.createdAt).toLocaleDateString()}</span>
-                            <div className="stars">
-                                {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                <div className="review-box">
+                    {reviews.map((r) => (
+                        <div key={r.id} className="review-item-card">
+                            <div className="review-top">
+                                <div className="avatar">{r.nickname.charAt(0).toUpperCase()}</div>
+                                <div className="review-user-info">
+                                    <strong>{r.nickname}</strong>
+                                    <span>{new Date(r.createdAt).toLocaleDateString()}</span>
+                                    <div className="stars">
+                                        {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="review-body">
+                                <div className="review-summary"><strong>{r.summary}</strong></div>
+                                <p>{r.comment}</p>
                             </div>
                         </div>
-                        <div className="review-summary"><strong>{r.summary}</strong></div>
-                        <p>{r.comment}</p>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
 
             {showPopup && (

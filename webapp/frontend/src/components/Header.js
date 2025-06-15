@@ -126,7 +126,7 @@ const Header = ({ user }) => {
             {showLogoutConfirm && (
                 <div className="logout-popup">
                     <div className="popup-content">
-                        <p>{t("confirmLogout")}</p>
+                        <p className="text-black">{t("confirmLogout")}</p>
                         <div className="popup-buttons">
                             <button className="btn btn-secondary" onClick={() => setShowLogoutConfirm(false)}>
                                 {t("cancel")}

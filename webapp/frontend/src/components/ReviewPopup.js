@@ -29,42 +29,47 @@ const ReviewPopup = ({ masp, product, onClose }) => {
     };
 
     return (
-        <div className="popup-overlay" onClick={onClose}>
-            <div className="popup-content" onClick={e => e.stopPropagation()}>
+        <div className="popup-overlay review-popup-wrapper" onClick={onClose}>
+            <div className="popup-content-review" onClick={e => e.stopPropagation()}>
                 <h3>{t('write_review')}</h3>
+                <div className="popup-body">
+                    <div className="popup-left">
+                        <label>{t('nickname')} *</label>
+                        <input name="nickname" placeholder="v.d. JackJack" onChange={handleChange}/>
 
-                <div className="product-info">
-                    <img src={`/img/${product.hinhanh}`} alt={product.tensp} />
-                    <div><strong>{product.tensp}</strong></div>
+                        <label>{t('email')} *</label>
+                        <input name="email" type="email" placeholder="abc@gmail.com" onChange={handleChange}/>
+
+                        <label>{t('summary')} *</label>
+                        <input name="summary" placeholder={t('summary_placeholder')} onChange={handleChange}/>
+
+                        <label>{t('image_url')}</label>
+                        <input name="imageUrl" placeholder="https://..." onChange={handleChange}/>
+
+                        <label>{t('detailed_comment')}</label>
+                        <textarea name="comment" rows={4} onChange={handleChange}/>
+                    </div>
+
+                    <div className="popup-right">
+                        <div className="product-info">
+                            <img src={`/img/${product.hinhanh}`} alt={product.tensp}/>
+                            <div><strong>{product.tensp}</strong></div>
+                        </div>
+
+                        <label>{t('rating')} *</label>
+                        <div className="star-input">
+                            {[1, 2, 3, 4, 5].map((n) => (
+                                <span
+                                    key={n}
+                                    className={form.rating >= n ? 'star active' : 'star'}
+                                    onClick={() => setForm({...form, rating: n})}
+                                >★</span>
+                            ))}
+                        </div>
+
+                        <button onClick={handleSubmit}>{t('submit_review')}</button>
+                    </div>
                 </div>
-
-                <label>{t('nickname')} *</label>
-                <input name="nickname" placeholder="v.d. JackJack" onChange={handleChange} />
-
-                <label>{t('email')} *</label>
-                <input name="email" type="email" placeholder="abc@gmail.com" onChange={handleChange} />
-
-                <label>{t('rating')} *</label>
-                <div className="star-input">
-                    {[1, 2, 3, 4, 5].map((n) => (
-                        <span
-                            key={n}
-                            className={form.rating >= n ? 'star active' : 'star'}
-                            onClick={() => setForm({ ...form, rating: n })}
-                        >★</span>
-                    ))}
-                </div>
-
-                <label>{t('summary')} *</label>
-                <input name="summary" placeholder={t('summary_placeholder')} onChange={handleChange} />
-
-                <label>{t('image_url')}</label>
-                <input name="imageUrl" placeholder="https://..." onChange={handleChange} />
-
-                <label>{t('detailed_comment')}</label>
-                <textarea name="comment" rows={4} onChange={handleChange} />
-
-                <button onClick={handleSubmit}>{t('submit_review')}</button>
             </div>
         </div>
     );

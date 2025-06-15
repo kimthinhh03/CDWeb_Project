@@ -115,7 +115,12 @@ const Cart = () => {
                     <div className="cart-summary">
                         <span className="label">{t('total')}:</span> {getTotalPrice().toLocaleString()} đ
                         <div className="mt-3">
-                            <button className="btn btn-success">{t('checkout')}</button>
+                            <button
+                                className="btn btn-success"
+                                onClick={() => navigate('/checkout', {state: {products: items}})}
+                            >
+                                {t('checkout-product')}
+                            </button>
                         </div>
                     </div>
                 </div>

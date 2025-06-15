@@ -5,12 +5,17 @@ import com.example.backend.model.UpdateHistory;
 import com.example.backend.repository.ProductRepository;
 import com.example.backend.repository.UpdateHistoryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.domain.Specification;
+import jakarta.persistence.criteria.Predicate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +29,8 @@ public class UpdateHistoryService {
 
     @Autowired
     private ObjectMapper objectMapper;
-
+    @PersistenceContext
+    private EntityManager entityManager;
     public void logHistory(String username, String actionType, String masp, Product oldData, Product newData) {
         try {
             UpdateHistory history = new UpdateHistory();
@@ -108,11 +114,14 @@ public class UpdateHistoryService {
     public Product updateProduct(String masp, Product updatedProduct, String username) {
         System.out.println(">>> Đã vào hàm logHistory()");
 
+        // Lấy bản ghi hiện tại từ DB
         Product existing = productRepository.findById(masp)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm: " + masp));
-        Product oldCopy = new Product(existing); // Clone lại bản đầy đủ
 
-        // Cập nhật các field ở bảng phụ `sanpham`
+        // Clone lại bản cũ để lưu vào lịch sử
+        Product oldCopy = new Product(existing);
+
+        // Cập nhật các trường ở bảng phụ `sanpham` (giả định đây là native SQL)
         productRepository.updateSanphamFields(
                 updatedProduct.getTensp(),
                 updatedProduct.getHinhanh(),
@@ -121,13 +130,20 @@ public class UpdateHistoryService {
                 masp
         );
 
-        // Cập nhật các field ở bảng chính `chitietsanpham`
+        // Đồng bộ lại entity sau khi update bằng native query
+        entityManager.flush();             // Đẩy thay đổi xuống DB
+        entityManager.refresh(existing);   // Cập nhật lại từ DB, tránh cache lỗi
+
+        // Cập nhật các trường ở bảng chính `chitietsanpham`
         existing.setPrice(updatedProduct.getPrice());
         existing.setStockQuantity(updatedProduct.getStockQuantity());
         existing.setUnit(updatedProduct.getUnit());
         existing.setCategory(updatedProduct.getCategory());
 
+        // Lưu lại bản ghi đã cập nhật
         Product saved = productRepository.save(existing);
+
+        // Ghi lịch sử thay đổi
         logHistory(username, "UPDATE", masp, oldCopy, saved);
 
         return saved;
@@ -136,5 +152,23 @@ public class UpdateHistoryService {
     public List<UpdateHistory> getAllHistories() {
         return updateHistoryRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt"));
     }
+    public List<UpdateHistory> filterHistories(String username, String actionType, String masp) {
+        return updateHistoryRepository.findAll((Specification<UpdateHistory>) (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
+            if (username != null && !username.isEmpty()) {
+                predicates.add(cb.equal(root.get("username"), username));
+            }
+
+            if (actionType != null && !actionType.isEmpty()) {
+                predicates.add(cb.equal(cb.upper(root.get("actionType")), actionType.toUpperCase()));
+            }
+
+            if (masp != null && !masp.isEmpty()) {
+                predicates.add(cb.equal(root.get("masp"), masp));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        }, Sort.by(Sort.Direction.DESC, "updatedAt"));
+    }
 }

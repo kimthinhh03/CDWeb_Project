@@ -8,9 +8,11 @@ import { useTranslation } from "react-i18next";
 import ReviewSection from "../components/ReviewSection";
 import { useCart } from '../contexts/CartContext';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const ProductDescription = () => {
     const { i18n, t } = useTranslation();
+    const navigate = useNavigate();
     const { productID } = useParams();
     const [product, setProduct] = useState(null);
     const [related, setRelated] = useState([]);
@@ -151,7 +153,24 @@ const ProductDescription = () => {
                             <button className="btn btn-success" onClick={handleAddToCart}>
                                 {t("addToCart")}
                             </button>
-                            <button className="btn btn-outline-success">{t("checkout")}</button>
+                            <button
+                                className="btn btn-outline-success"
+                                onClick={() =>
+                                    navigate('/checkout', {
+                                        state: {
+                                            product: {
+                                                masp: product.masp,
+                                                tensp: product.tensp,
+                                                price: product.price,
+                                                quantity: quantity,
+                                                hinhanh: product.hinhanh
+                                            }
+                                        }
+                                    })
+                                }
+                            >
+                                {t("checkout-product")}
+                            </button>
                         </div>
                     </div>
                 </div>

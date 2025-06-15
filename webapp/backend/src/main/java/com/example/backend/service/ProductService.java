@@ -90,11 +90,19 @@ public class ProductService {
         return productRepository.findByTenspContainingIgnoreCase(name);
     }
 
-    public List<Product> getRandomProducts(int limit, String lang) {
+    public List<ProductDTO> getRandomProducts(int limit, String lang) {
         Pageable pageable = PageRequest.of(0, limit);
         List<Product> products = productRepository.findRandomProducts(pageable);
-        applyTranslations(products, lang);
-        return products;
+
+        List<ProductDTO> productDTOs = new ArrayList<>();
+        for (Product product : products) {
+            ProductDTO dto = new ProductDTO(product);
+            translationRepo.findByMaspAndLang(product.getMasp(), lang)
+                    .ifPresent(tr -> dto.setTensp(tr.getName()));
+            productDTOs.add(dto);
+        }
+
+        return productDTOs;
     }
 
     public Page<Product> getPageProductsByCategory(String category, String lang, Pageable pageable) {

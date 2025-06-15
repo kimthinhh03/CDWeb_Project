@@ -3,7 +3,7 @@ import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Paper, Avatar, IconButton, Typography, Button, Dialog, DialogActions,
     DialogContent, DialogContentText, DialogTitle, TableSortLabel, TextField,
-    TablePagination, Select, MenuItem, FormControl, InputLabel, Grid
+    TablePagination, Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
 import { green, red } from '@mui/material/colors';
 import { Edit, Delete, Add } from '@mui/icons-material';
@@ -28,11 +28,22 @@ const AdminProductList = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    const mapProducts = (data) => data.map(product => ({
+        ...product,
+        tensp: product.tensp,
+        productName: product.tensp,
+        price: product.price,
+        unit: product.unit,
+        category: product.category || product.danhmuc,
+        hinhanh: product.hinhanh,
+        stockQuantity: product.stockQuantity ?? product.stock_quantity
+    }));
+
     useEffect(() => {
         axios.get('/api/product/all', { params: { lang: 'vi' } })
-            .then(res => setProducts(res.data))
-            .catch(err => console.error(err));
+            .then(res => setProducts(mapProducts(res.data)));
     }, []);
+
     const handleDeleteClick = (product) => {
         setSelectedProduct(product);
         setDeleteDialogOpen(true);
@@ -88,7 +99,6 @@ const AdminProductList = () => {
         const username = localStorage.getItem('username');
 
         if (!username) {
-            console.error("Không có username trong localStorage. Hãy đăng nhập lại.");
             alert("Lỗi: Không xác định được người dùng. Vui lòng đăng nhập lại.");
             return;
         }
@@ -100,23 +110,12 @@ const AdminProductList = () => {
 
         const productToSend = { ...editedProduct };
 
-        console.log("Dữ liệu gửi:", productToSend);
-        console.log("Gửi đến:", url);
-
         method(url, productToSend)
-            .then((response) => {
-                if (isAddMode) {
-                    setProducts(prev => [...prev, response.data || productToSend]); // dùng response.data nếu API trả về sản phẩm mới
-                } else {
-                    setProducts(prev =>
-                        prev.map(p =>
-                            p.masp === productToSend.masp ? { ...p, ...productToSend } : p
-                        )
-                    );
-                }
-
-                axios.get('/api/product/all', { params: { lang: 'vi' } }).then(res => setProducts(res.data));
-
+            .then(() => {
+                return axios.get('/api/product/all', { params: { lang: 'vi' } });
+            })
+            .then(res => {
+                setProducts(mapProducts(res.data));
                 setConfirmEditOpen(false);
                 setEditDialogOpen(false);
             })
@@ -157,12 +156,12 @@ const AdminProductList = () => {
 
     const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
 
-    // Hoàn tác cập nhật sản phẩm
     const undoUpdate = (id) => {
         axios.post(`/api/product/undo/${id}`)
             .then(() => alert("Hoàn tác thành công!"))
             .catch(err => console.error("Lỗi khi hoàn tác:", err));
     };
+
     return (
         <>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -203,7 +202,7 @@ const AdminProductList = () => {
                 <Button variant="contained" startIcon={<Add />} onClick={handleAddClick}>{t('addProduct')}</Button>
             </div>
 
-            <TableContainer component={Paper} className="table-wrapper">
+            <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -235,6 +234,7 @@ const AdminProductList = () => {
                                     {t("stock")}
                                 </TableSortLabel>
                             </TableCell>
+                            <TableCell>{t("category")}</TableCell>
                             <TableCell>{t("status")}</TableCell>
                             <TableCell>{t("action")}</TableCell>
                         </TableRow>
@@ -252,6 +252,7 @@ const AdminProductList = () => {
                                 <TableCell>{product.tensp}</TableCell>
                                 <TableCell>{product.price?.toLocaleString('vi-VN')} đ</TableCell>
                                 <TableCell>{product.stockQuantity}</TableCell>
+                                <TableCell>{product.category}</TableCell>
                                 <TableCell>
                                     <span style={{
                                         display: 'flex', alignItems: 'center', gap: 8,

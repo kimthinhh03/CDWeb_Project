@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .checkout-title {
+        @apply text-xl font-bold mb-4;
+    }
+
+    .checkout-section {
+        @apply bg-white p-6 rounded shadow;
+    }
+
+    .checkout-label {
+        @apply font-semibold mb-2;
+    }
+
+    .order-summary-line {
+        @apply flex justify-between text-sm;
+    }
+
+    .order-summary-total {
+        @apply flex justify-between font-semibold text-base;
+    }
+
+    .checkout-input {
+        @apply border p-2 rounded w-full;
+    }
+
+    .checkout-checkbox-label {
+        @apply flex items-center space-x-2;
+    }
+
+    .checkout-gift-box {
+        @apply bg-green-100 text-green-800 text-sm p-2 rounded;
+    }
+
+    .checkout-button {
+        @apply w-full bg-lime-500 hover:bg-lime-600 text-white py-3 rounded font-semibold mt-2;
+    }
+
+    .checkout-terms {
+        @apply text-xs text-center mt-3 text-gray-500;
+    }
+
+    .checkout-voucher {
+        @apply mt-4;
+    }
+
+    .checkout-voucher-input {
+        @apply border p-2 rounded w-full;
+    }
+
+    .checkout-voucher-btn {
+        @apply bg-gray-200 px-4 py-2 rounded;
+    }
+
+    .checkout-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 1rem;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Overlay for popup */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    /* Popup content box */
+    .popup-content {
+        background: white;
+        padding: 24px;
+        border-radius: 8px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        animation: fadeIn 0.3s ease;
+        color: #000;
+    }
+
+    /* Simple fade-in animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Optional: style the buttons inside popup */
+    .popup-content .btn {
+        padding: 6px 16px;
+        font-size: 14px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    /* For image inside VNPay section */
+    .popup-content img {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        display: block;
+        margin: 0 auto;
+    }
+
+    /* Responsive spacing */
+    @media (max-width: 480px) {
+        .popup-content {
+            padding: 16px;
+        }
+
+        .popup-content h5 {
+            font-size: 16px;
+        }
+
+        .popup-content p {
+            font-size: 14px;
+        }
+    }
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+}

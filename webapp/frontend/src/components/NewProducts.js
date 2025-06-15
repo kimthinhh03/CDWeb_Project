@@ -36,20 +36,22 @@ const NewProducts = () => {
     // };
     useEffect(() => {
         const lang = i18n.language;
-        productApi.getRandomProducts(4, lang)
-            .then(res => {
-                const data = Array.isArray(res.data) ? res.data : [];
-                console.log("Kết quả API:", res.data);
-                setProducts(data);
-                setLoading(false);
-            })
-            .catch(err => {
-                setError(err.message);
-                setLoading(false);
-                setProducts([]);
-            });
-    }, []);
 
+        const fetchData = async () => {
+            try {
+                const res = await axios.get(`/api/product/random?limit=4&lang=${lang}`);
+                const data = Array.isArray(res.data) ? res.data : [];
+                setProducts(data);
+            } catch (err) {
+                setError(err.message);
+                setProducts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [i18n.language]);
     if (loading) {
         return <div className="text-center my-5">{t("loading")}</div>;
     }

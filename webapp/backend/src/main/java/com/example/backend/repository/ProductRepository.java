@@ -12,14 +12,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
     // Lấy tất cả sản phẩm
     @EntityGraph(attributePaths = {"translations"})
     Page<Product> findAll(Pageable pageable);
-
-
+    // Tìm kiếm theo mã sản phẩm
+    Optional<Product> findByMasp(String masp);
     // Tìm kiếm sản phẩm theo tên (không phân biệt hoa thường)
     List<Product> findByTenspContainingIgnoreCase(String name);
 
