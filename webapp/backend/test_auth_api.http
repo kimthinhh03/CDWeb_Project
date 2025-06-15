@@ -44,3 +44,12 @@ Content-Type: application/json
   "surName": "Tran",
   "lastName": "Van B"
 }
+
+### Test API thêm nội dung vào cập nhật
+POST http://localhost:8888/update-history/log
+Content-Type: application/json
+
+{
+"action": "UPDATE_PRODUCT",
+"details": "Cập nhật sản phẩm A"
+}

@@ -6,8 +6,10 @@ import en from './en/translation.json';
 import vi from './vi/translation.json';
 import kr from './kr/translation.json';
 
+const savedLang = localStorage.getItem('lang') || 'vi';
+
 i18n
-    .use(LanguageDetector) // tự động phát hiện ngôn ngữ trình duyệt
+    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources: {
@@ -15,6 +17,7 @@ i18n
             vi: { translation: vi },
             kr: { translation: kr },
         },
+        lng: savedLang,
         fallbackLng: 'vi',
         detection: {
             order: ['localStorage', 'navigator'],

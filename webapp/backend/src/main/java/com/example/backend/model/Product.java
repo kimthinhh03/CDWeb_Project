@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -15,7 +18,7 @@ import java.io.Serializable;
 @Table(name = "chitietsanpham")
 @SecondaryTable(
         name = "sanpham",
-        pkJoinColumns = @PrimaryKeyJoinColumn(name = "masp", referencedColumnName = "masp")
+        pkJoinColumns = @PrimaryKeyJoinColumn(name = "masp")
 )
 public class Product implements Serializable {
 
@@ -23,7 +26,6 @@ public class Product implements Serializable {
     @Column(name = "masp")
     private String masp;
 
-    // Các thuộc tính từ secondary table (sanpham)
     @Column(name = "tensp", table = "sanpham")
     private String tensp;
 
@@ -36,7 +38,6 @@ public class Product implements Serializable {
     @Column(name = "mota", table = "sanpham", length = 2000)
     private String mota;
 
-    // Các thuộc tính từ primary table (chitietsanpham)
     @Column(name = "category")
     private String category;
 
@@ -50,22 +51,29 @@ public class Product implements Serializable {
     private Integer stockQuantity;
 
 
-//    // Liên kết với bảng sanpham
-//    @OneToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "masp", referencedColumnName = "masp", insertable = false, updatable = false)
-//    private ProductDetail productDetail;
-
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
-    private java.util.List<ProductTranslation> translations;
+    @JsonIgnore
+    private List<ProductTranslation> translations;
 
-    public Product() {
+    public Product() {}
 
+    public Product(Product other) {
+        this.masp = other.masp;
+        this.tensp = other.tensp;
+        this.hinhanh = other.hinhanh;
+        this.nhacungcap = other.nhacungcap;
+        this.mota = other.mota;
+        this.category = other.category;
+        this.price = other.price;
+        this.unit = other.unit;
+        this.stockQuantity = other.stockQuantity;
+
+        // Deep copy danh sách translation
+        this.translations = (other.translations != null) ?
+                other.translations.stream()
+                        .map(ProductTranslation::new)
+                        .collect(Collectors.toList())
+                : null;
     }
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "masp", referencedColumnName = "masp", insertable = false, updatable = false)
-    private ProductDetail productDetail;
-
 }
-

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,7 +16,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
     // Lấy tất cả sản phẩm
-    @EntityGraph(attributePaths = {"productDetail", "translations"})
+    @EntityGraph(attributePaths = {"translations"})
     Page<Product> findAll(Pageable pageable);
 
 
@@ -75,4 +76,12 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             @Param("lang") String lang,
             Pageable pageable
     );
+
+    @Modifying
+    @Query(value = "UPDATE sanpham SET tensp = :tensp, hinhanh = :hinhanh, nhacungcap = :nhacungcap, mota = :mota WHERE masp = :masp", nativeQuery = true)
+    void updateSanphamFields(@Param("tensp") String tensp,
+                             @Param("hinhanh") String hinhanh,
+                             @Param("nhacungcap") String nhacungcap,
+                             @Param("mota") String mota,
+                             @Param("masp") String masp);
 }

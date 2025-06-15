@@ -52,8 +52,8 @@ const LookUp = () => {
                             <Link to={`/product/${product.masp}`} className="text-decoration-none">
                                 <div className="card h-100 text-center shadow-sm">
                                     <img
-                                        src={`/img/${product.productDetail?.hinhanh}`}
-                                        alt={product.productDetail?.tensp}
+                                        src={`/img/${product.hinhanh}`}
+                                        alt={product.tensp}
                                         className="card-img-top"
                                         style={{ height: 200, objectFit: 'contain' }}
                                         onError={(e) => { e.target.src = '/img/logo.png'; }}
@@ -63,9 +63,9 @@ const LookUp = () => {
                                             {product.price?.toLocaleString("vi-VN")} đ
                                         </h5>
                                         <p className="card-text text-dark">
-                                            {product.productDetail?.tensp?.length > 45
-                                                ? product.productDetail.tensp.substring(0, 45) + "..."
-                                                : product.productDetail?.tensp}
+                                            {product.tensp?.length > 45
+                                                ? product.tensp.substring(0, 45) + "..."
+                                                : product.tensp}
                                         </p>
                                     </div>
                                 </div>

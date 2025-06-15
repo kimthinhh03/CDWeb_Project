@@ -30,5 +30,11 @@ public class ProductTranslation {
     @JsonBackReference
     private Product product;
 
-
+    public ProductTranslation(ProductTranslation other) {
+        this.id = other.id;
+        this.masp = other.masp;
+        this.lang = other.lang;
+        this.name = other.name;
+        this.product = null;
+    }
 }

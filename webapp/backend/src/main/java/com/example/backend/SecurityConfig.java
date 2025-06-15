@@ -38,6 +38,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/review/**").permitAll()
                         .requestMatchers("/test/**").permitAll()
                         .requestMatchers("/api/cart/**").authenticated()
+//                        .requestMatchers("/api/history").hasRole("ADMIN")
+                        .requestMatchers("/api/history").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
