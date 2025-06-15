@@ -1,3 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import custom checkout CSS */
+@import './css/Checkout.css';
+
+/* Optional: thêm các custom style khác */
 .container {
   background-color: white;
 }

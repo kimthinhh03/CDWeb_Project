@@ -6,10 +6,15 @@ export default function UpdateHistoryPage() {
     const [history, setHistory] = useState([]);
 
     useEffect(() => {
-        axios.get('/api/history')
+        const token = localStorage.getItem('token');
+
+        axios.get('/api/history', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
             .then(res => {
-                // const data = [...res.data];
-                console.log("📜 Lịch sử trả về:", res.data);
+                console.log("Lịch sử trả về:", res.data);
                 setHistory(res.data);
             })
             .catch(err => console.error(err));

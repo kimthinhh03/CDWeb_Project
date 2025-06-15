@@ -36,8 +36,20 @@ public class UpdateHistoryController {
     private ObjectMapper objectMapper;
 
     @GetMapping
-    public ResponseEntity<List<UpdateHistory>> getAllHistories() {
-        return ResponseEntity.ok(updateHistoryService.getAllHistories());
+    public ResponseEntity<List<UpdateHistory>> getHistories(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String actionType,
+            @RequestParam(required = false) String masp
+    ) {
+        List<UpdateHistory> results;
+
+        if (username != null || actionType != null || masp != null) {
+            results = updateHistoryService.filterHistories(username, actionType, masp);
+        } else {
+            results = updateHistoryService.getAllHistories();
+        }
+
+        return ResponseEntity.ok(results);
     }
 
     @PostMapping("/undo/{historyId}")
@@ -65,6 +77,18 @@ public class UpdateHistoryController {
             return ResponseEntity.ok("Hoàn tác thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi hoàn tác");
+        }
+    }
+    @PostMapping("/log")
+    public ResponseEntity<?> logUpdateHistory(@RequestBody UpdateHistory history) {
+        try {
+            // Gọi service để lưu
+            updateHistoryRepository.save(history);
+
+            return ResponseEntity.ok().body("Lưu lịch sử thành công");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Lỗi khi lưu lịch sử cập nhật");
         }
     }
 }

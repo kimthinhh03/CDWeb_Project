@@ -54,7 +54,7 @@ public class ProductController {
 
     // Lấy ngẫu nhiên sản phẩm
     @GetMapping("/random")
-    public List<Product> getRandomProducts(@RequestParam int limit, @RequestParam String lang) {
+    public List<ProductDTO> getRandomProducts(@RequestParam int limit, @RequestParam String lang) {
         return productService.getRandomProducts(limit, lang);
     }
 

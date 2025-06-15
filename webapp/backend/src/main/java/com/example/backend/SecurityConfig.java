@@ -33,13 +33,17 @@ public class SecurityConfig {
                                 "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**",
                                 "/webjars/**", "/configuration/ui", "/configuration/security"
                         ).permitAll()
+
                         .requestMatchers("/api/product/**").permitAll()
+                                .requestMatchers("/api/orders/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/review/**").permitAll()
                         .requestMatchers("/test/**").permitAll()
                         .requestMatchers("/api/cart/**").authenticated()
 //                        .requestMatchers("/api/history").hasRole("ADMIN")
-                        .requestMatchers("/api/history").permitAll()
+//                                .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/history/**").permitAll()
+//                                .requestMatchers("/api/orders/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
